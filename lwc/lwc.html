@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+	<title>Living Wage Calculator</title>
+	<link rel="stylesheet" href="lwc.css" />
+</head>
+
+<body>
+
+	<script src="//d3js.org/d3.v3.min.js"></script>
+	<script src="//d3js.org/queue.v1.min.js"></script>
+	<script src="//d3js.org/topojson.v1.min.js"></script>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> 
+
+	<div style="height: 100%; display: flex;">
+		<div id="lwcContainer" style="height: 100%; flex-grow: 12;"></div>
+		<div style="width: 300px">
+			<label for="modelSelect">Model:</label><select id="modelSelect">
+				<option selected>A Model</option>
+			</select>
+
+			<div id="barchart"></div>
+		</div>
+
+	<script src="map.js"></script>
+	<script src="barchart.js"></script>
+
+	<script>
+		lwcMap = UsMap; // want to make this a proper object at some point...
+
+		
+
+		rateById = d3.map();
+		dataById = d3.map();
+
+		var dataDeferred = queue().defer(d3.csv, "data/Calc.csv", function(d) {
+	      var fips = d['fips']
+	      if (fips[0] == '0') {
+	        fips = fips.substr(1);
+	      }
+
+	      if (fips.endsWith('99999')) {
+	      	fips = fips.substring(0, fips.length - 5);
+
+	      }
+	      rateById.set(fips, +d['total_cost']);
+	      dataById.set(fips, d);
+	    });
+
+	    lwcMap.build(document.getElementById('lwcContainer'), function() {
+	    	// This stuff is to handle race conditions between loading the csv and the map initialization.
+	    	dataDeferred.await(function(error) {
+		    	if (error) throw error;
+		    	console.log("data loaded");
+
+		    	lwcMap.recolor(rateById);
+	    	});
+	    });
+
+	    lwcMap.addTooltipHandler(function(d) {
+	    	return "Living Wage: $" + (rateById.get(d.id)).toFixed(2);
+	    });
+
+	    var mainBarChart = new barchart(d3.select('#barchart'));
+
+	    // Hacky way to connect mouseover events to barchart
+	    lwcMap.overCounty = function(d) {
+	    	mainBarChart.update(dataById.get(d.id));
+	    }
+	</script>
+</body>
