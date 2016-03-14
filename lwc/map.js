@@ -1,32 +1,29 @@
-var UsMap = {
-	build : function(domRoot, onLoad) {
+function UsMap(domRoot, onLoad) {
 
-		this.svg = d3.select(domRoot).append('div').attr('style', 'height: 100%')
-			.append("svg")
-			//.attr("width", width)
-			//.attr("height", height);
-			  .attr('width', "100%")
-			  .attr('height', '100%')
+	this.svg = d3.select(domRoot).append('div').attr('style', 'height: 100%')
+		.append("svg")
+		//.attr("width", width)
+		//.attr("height", height);
+		  .attr('width', "100%")
+		  .attr('height', '100%')
 
-		this.world = this.svg.append('g');
+	this.world = this.svg.append('g');
 
-		var this_ = this;
+	var this_ = this;
 
-		queue()
-			.defer(d3.json, "us.json")
-			.await(function ready(error, us) {
-				if (error) throw error;
-				console.log("drawing geometry");
-				this_.drawMapGeometry(us);
+	queue()
+		.defer(d3.json, "us.json")
+		.await(function ready(error, us) {
+			if (error) throw error;
+			console.log("drawing geometry");
+			this_.drawMapGeometry(us);
 
-				if (onLoad) {
-					onLoad();
-				}
-			});
+			if (onLoad) {
+				onLoad();
+			}
+		});
 
-	},
-
-	drawMapGeometry : function(map) {
+	this.drawMapGeometry = function(map) {
 
 		var world = this.world;
 
@@ -67,12 +64,12 @@ var UsMap = {
 		  .attr("d", path);
 
 		this.addZoom();
-	},
+	};
 
 	/**
 	 * Handler should be a function accepting 1 parameter, d
 	 */
-	addTooltipHandler : function(handler) {
+	this.addTooltipHandler = function(handler) {
 		this.tip = d3.tip()
 		  .attr('class', 'd3-tip')
 		  .offset([-10, 0])
@@ -80,9 +77,9 @@ var UsMap = {
 		  .html(handler);
 
 		this.svg.call(this.tip);
-	},
+	};
 
-	addZoom : function() {
+	this.addZoom = function() {
 		// https://bl.ocks.org/mbostock/8fadc5ac9c2a9e7c5ba2
 		var world = this.world;
 
@@ -93,9 +90,9 @@ var UsMap = {
 			});
 
 		this.svg.call(zoom).call(zoom.event);
-	},
+	};
 
-	recolor: function(countyDataMap) {
+	this.recolor = function(countyDataMap) {
 
 		// Not sure correct terminology... basically buckets from 0..1
 		if (this.percentiles) {
@@ -120,5 +117,5 @@ var UsMap = {
 		d3.selectAll(".counties > path").attr('fill', function(d) {
 			return colorScale(cdf(countyDataMap.get(d.id)));
 		});
-	}
+	};
 }

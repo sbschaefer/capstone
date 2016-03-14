@@ -3,6 +3,12 @@
 <head>
 	<title>Living Wage Calculator</title>
 	<link rel="stylesheet" href="lwc.css" />
+	<style>
+	#lwcContainer svg {
+		border: solid;
+		border-width: 1px;
+	}
+	</style>
 </head>
 
 <body>
@@ -47,7 +53,7 @@
 	      dataById.set(fips, d);
 	    });
 
-	    lwcMap.build(document.getElementById('lwcContainer'), function() {
+	    lwcMap = new UsMap(document.getElementById('lwcContainer'), function() {
 	    	// This stuff is to handle race conditions between loading the csv and the map initialization.
 	    	dataDeferred.await(function(error) {
 		    	if (error) throw error;
