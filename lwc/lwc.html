@@ -11,15 +11,58 @@
 		height: inherit;
 	}
 
-	#lwcContainer > div {
-		/*
-		This hopefully sets an aspect ratio approx. 1.695:1
-		Arrived at by prnt-screen and cropping down to a good size
-		based on the US map... which lead to 1268x748
-		748/1268 * 100 ~ 59% since we're basing on 100% height
-		*/
-		width: 169.5vh;
-		height: 100vh;
+
+
+	#calculator {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	@media (min-aspect-ratio: 16/10) {
+		#calculator {
+			height: 100%;
+		}
+
+		#lwcContainer > div {
+			/*
+			This hopefully sets an aspect ratio approx. 1.695:1
+			Arrived at by prnt-screen and cropping down to a good size
+			based on the US map... which lead to 1268x748
+			748/1268 * 100 ~ 59% since we're basing on 100% height
+			*/
+			width: 169.5vh;
+			height: 100vh;
+		}
+
+		#extraContainer {
+			width: 100vw;
+			height: 100vh;
+		}
+	}
+
+	@media (max-aspect-ratio: 16/10) {
+		#calculator {
+			width: 100vw;
+			height: 56vh;
+		}
+
+		#lwcContainer > div {
+			height: 100%;
+			width: 100%;
+		}
+
+		#lwcContainer {
+			height: 100%;
+			width: 100%;
+		}
+
+		#extraContainer {
+			display: flex;
+			align-items: center;
+			height: 100%;
+
+		}
 	}
 
 	body {
@@ -27,7 +70,7 @@
 	}
 
 	#dataContainer {
-		width: 100%;
+		width: 350px;
 		margin: 25px;
 	}
 	</style>
@@ -39,9 +82,9 @@
 	<script src="//d3js.org/queue.v1.min.js"></script>
 	<script src="//d3js.org/topojson.v1.min.js"></script>
 	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> 
-
-	<div style="height: 100%; display: flex;">
-		<div id="lwcContainer" style="height: 100%; flex-grow: 12;"></div>
+<div id="extraContainer">
+	<div id="calculator">
+		<div id="lwcContainer"></div>
 		<div id="dataContainer">
 			<div style="margin-bottom: 10px;">
 			<label for="modelSelect">Model:</label><select id="modelSelect">
@@ -65,6 +108,8 @@
 
 			<div id="barchart"></div>
 		</div>
+	</div>
+</div>
 
 	<script src="map.js"></script>
 	<script src="barchart.js"></script>
