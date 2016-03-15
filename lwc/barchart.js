@@ -65,7 +65,7 @@ function barchart(parentNode) {
 
 
     //y.domain([0, d3.max(data, function(d) { return d.value; })]);
-    y.domain([0, 12000]); //to-do: fix this
+    y.domain([0, 15000]); //to-do: fix this
 
     //var dataById = d3.map(data, function(d) {return d.id;});
 

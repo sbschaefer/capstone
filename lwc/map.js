@@ -1,11 +1,10 @@
 function UsMap(domRoot, onLoad) {
 
-	this.svg = d3.select(domRoot).append('div').attr('style', 'height: 100%')
-		.append("svg")
+	this.svg = d3.select(domRoot).append('div').append("svg")
 		//.attr("width", width)
 		//.attr("height", height);
-		  .attr('width', "100%")
-		  .attr('height', '100%')
+		  //.attr('width', "100%")
+		  //.attr('height', '100%')
 
 	this.world = this.svg.append('g');
 
@@ -27,12 +26,14 @@ function UsMap(domRoot, onLoad) {
 
 		var world = this.world;
 
-		var width = 1200;
-		var height = 800;
+		var rect = this.svg.node().getBoundingClientRect();
+
+		var width = rect.width;
+		var height = rect.height;
 
 		var projection = d3.geo.albersUsa()
-			.scale(1280)
-			.translate([width / 2, height / 2]);
+			.scale(width * 1.22)
+			.translate([width / 2 + 30, height / 2]);
 
 		var path = d3.geo.path()
 			.projection(projection);

@@ -7,6 +7,28 @@
 	#lwcContainer svg {
 		border: solid;
 		border-width: 1px;
+		width: inherit;
+		height: inherit;
+	}
+
+	#lwcContainer > div {
+		/*
+		This hopefully sets an aspect ratio approx. 1.695:1
+		Arrived at by prnt-screen and cropping down to a good size
+		based on the US map... which lead to 1268x748
+		748/1268 * 100 ~ 59% since we're basing on 100% height
+		*/
+		width: 169.5vh;
+		height: 100vh;
+	}
+
+	body {
+		margin: 0px;
+	}
+
+	#dataContainer {
+		width: 100%;
+		margin: 25px;
 	}
 	</style>
 </head>
@@ -20,10 +42,26 @@
 
 	<div style="height: 100%; display: flex;">
 		<div id="lwcContainer" style="height: 100%; flex-grow: 12;"></div>
-		<div style="width: 300px">
+		<div id="dataContainer">
+			<div style="margin-bottom: 10px;">
 			<label for="modelSelect">Model:</label><select id="modelSelect">
 				<option selected>A Model</option>
 			</select>
+			</div>
+
+			<div>
+			<label for="familySelect">Family:</label>
+			<select id="familySelect">
+				<option selected value="1adult">1 Adult</option>
+				<option value="1adult1">1 Adult + 1 Child</option>
+				<option value="1adult2">1 Adult + 2 Children</option>
+				<option value="1adult3">1 Adult + 3 Children</option>
+				<option value="2adults">2 Adults</option>
+				<option value="2adults1">2 Adults + 1 Child</option>
+				<option value="2adults2">2 Adults + 2 Children</option>
+				<option value="2adults3">2 Adults + 3 Children</option>
+			</select>
+			</div>
 
 			<div id="barchart"></div>
 		</div>
