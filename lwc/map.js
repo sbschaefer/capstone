@@ -108,15 +108,51 @@ function UsMap(domRoot, onLoad) {
 			.domain(countyDataMap.values())
 			.range(percentiles);
 
-		var colorScale = d3.scale.linear()
-			.domain([0, 1])
-			//.range([d3.rgb(237, 248, 233), d3.rgb(0, 109, 44)])
-			//.range([d3.rgb(0, 0, 0), d3.rgb(255, 0, 0)])
-			.range([d3.rgb(221, 242, 215), d3.rgb(0, 109, 44)])
-			.interpolate(d3.interpolateRgb);
+		// var colorScale = d3.scale.linear()
+		// 	.domain([0, 1])
+		// 	//.range([d3.rgb(237, 248, 233), d3.rgb(0, 109, 44)])
+		// 	//.range([d3.rgb(0, 0, 0), d3.rgb(255, 0, 0)])
+		// 	.range([d3.rgb(221, 242, 215), d3.rgb(0, 109, 44)])
+		// 	.interpolate(d3.interpolateRgb);
+
+		var colorScale = this.buildDivergentScale(
+			d3.rgb(0, 0, 217),
+			d3.rgb(188, 188, 188),
+			d3.rgb(186, 0, 0)
+		);
 
 		d3.selectAll(".counties > path").attr('fill', function(d) {
 			return colorScale(cdf(countyDataMap.get(d.id)));
 		});
 	};
+
+		// Interpolate between 3 colors.
+	this.buildDivergentScale = function(lowerColor, midColor, upperColor) {
+	  var lowerColorScale = d3.scale.linear()
+	    .domain([0, .5])
+	    .range([lowerColor, midColor])
+	    .interpolate(d3.interpolateRgb)
+
+	  var upperColorScale = d3.scale.linear()
+	    .domain([.5, 1])
+	    .range([midColor, upperColor])
+	    .interpolate(d3.interpolateRgb)
+
+	  return function(val) {
+	    return (val <= .5) ? lowerColorScale(val) : upperColorScale(val);
+	  };
+	}
+
+	this.setCdfDivergent = function(lowerColor, midColor, upperColor) {
+	  var cdf = d3.scale.quantile()
+	    .domain(rateById.values())
+	    .range(percentiles)
+
+	  divergentScale = buildDivergentScale(lowerColor, midColor, upperColor);
+
+	  updateCountyFill(function(d) {
+	    val = cdf(rateById.get(d.id));
+	    return divergentScale(val);
+	  });
+}
 }
