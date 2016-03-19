@@ -3,6 +3,7 @@
 <head>
 	<title>Living Wage Calculator</title>
 	<link rel="stylesheet" href="lwc.css" />
+	<link rel="stylesheet" href="tabs.css" />
 	<style>
 	#lwcContainer svg {
 		border-right-style: double;
@@ -80,11 +81,14 @@
 		font-weight: bold;
 		font-size: larger;
 		margin-top: 20px;
+		margin-bottom: 20px;
 	}
+
 	</style>
 </head>
 
 <body>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
 	<script src="//d3js.org/d3.v3.min.js"></script>
 	<script src="//d3js.org/queue.v1.min.js"></script>
@@ -118,15 +122,28 @@
 			</div>
 
 			<div id="countyNameContainer">
-				<span id="countyName"></span>
+				<span id="countyName">&nbsp;</span>
 			</div>
 
-			<div style="display: none;" id="barchart"></div>
+			<div class="tabs tabs-style-linebox">
+				<nav>
+					<ul>
+						<li><a href='#costChart'><span>Costs</span></a></li>
+						<li><a href='#salaryHist'><span>Salary Breakdown</span></a></li>
+					</ul>
+			  	</nav>
+			
+				
+					<div id="costChart"></div>
 
-			<div style="" id="salaryHist"></div>
+					<div id="salaryHist"></div>
+				
+			</div>
 		</div>
 	</div>
 </div>
+
+<script src="tabs.js"></script>
 
 	<script>
 		function normalize_fips(fips) {
@@ -200,7 +217,7 @@
 	    	return "Living Wage: $" + (rateById.get(d.id)).toFixed(2);
 	    });
 
-	    var mainBarChart = new barchart(d3.select('#barchart'));
+	    var mainBarChart = new barchart(d3.select('#costChart'));
 
 	    var salaryHistogram = new histogram(d3.select("#salaryHist"));
 
