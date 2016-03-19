@@ -121,13 +121,30 @@
 				<span id="countyName"></span>
 			</div>
 
-			<div id="barchart"></div>
+			<div style="display: none;" id="barchart"></div>
+
+			<div style="" id="salaryHist"></div>
 		</div>
 	</div>
 </div>
 
+	<script>
+		function normalize_fips(fips) {
+			if (fips[0] == '0') {
+		        return fips.substr(1);
+		    }
+
+			if (fips.endsWith('99999')) {
+				return fips.substring(0, fips.length - 5);
+			}
+
+			return fips;
+		}
+	</script>
+
 	<script src="map.js"></script>
 	<script src="barchart.js"></script>
+	<script src="histogram.js"></script>
 
 	<script>
 		lwcMap = UsMap; // want to make this a proper object at some point...
@@ -136,28 +153,38 @@
 
 		rateById = d3.map();
 		dataById = d3.map();
+		salaryById = d3.map();
 		countyByFips = d3.map();
 
-		var dataDeferred = queue()
-			.defer(d3.csv, "data/Calc.csv", function(d) {
-		      var fips = d['fips']
-		      if (fips[0] == '0') {
-		        fips = fips.substr(1);
-		      }
+		salary_columns = ['10000', '15000', '20000', '25000', '30000', '35000', '40000', '45000', '50000', '60000', '75000', '100000', '125000', '150000', '200000', '200000+'];
 
-		      if (fips.endsWith('99999')) {
-		      	fips = fips.substring(0, fips.length - 5);
+		var dataDeferred = 
+			queue().defer(d3.csv, "data/Calc.csv", function(d) {
 
-		      }
-		      rateById.set(fips, +d['total_cost']);
-		      dataById.set(fips, d);
-	    })
-			.defer(d3.csv, "data/county_names.csv", function(d) {
+					var fips = normalize_fips(d['fips'])
+
+					rateById.set(fips, +d['total_cost']);
+					dataById.set(fips, d);
+
+		    }).defer(d3.csv, "data/county_names.csv", function(d) {
+				
 				countyByFips.set(d['code'], {
 					'state': d['state'], 
 					'name': d['name']
 				});
-			});
+
+			}).defer(d3.csv, "data/IncomeAndPop.csv", function(d) {
+
+				var fips = normalize_fips(d['fips'])
+
+				var data = []
+
+				salary_columns.forEach(function(c) {
+					data.push(d[c])
+				});
+
+				salaryById.set(fips, data);
+			})
 
 	    lwcMap = new UsMap(document.getElementById('lwcContainer'), function() {
 	    	// This stuff is to handle race conditions between loading the csv and the map initialization.
@@ -175,6 +202,8 @@
 
 	    var mainBarChart = new barchart(d3.select('#barchart'));
 
+	    var salaryHistogram = new histogram(d3.select("#salaryHist"));
+
 	    // Hacky way to connect mouseover events to barchart
 	    lwcMap.overCounty = function(d) {
 	    	var fips = d.id;
@@ -183,6 +212,8 @@
 	    	var county = countyByFips.get(fips);
 	    	var countyText = county.name + ", " + county.state;
 	    	document.getElementById('countyName').innerHTML = countyText;
+
+	    	salaryHistogram.update(salary_columns, salaryById.get(fips));
 	    }
 	</script>
 </body>
