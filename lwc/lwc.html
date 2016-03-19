@@ -4,6 +4,7 @@
 	<title>Living Wage Calculator</title>
 	<link rel="stylesheet" href="lwc.css" />
 	<link rel="stylesheet" href="tabs.css" />
+	<link rel="stylesheet" href="selectric/selectric.css" />
 	<style>
 	#lwcContainer svg {
 		border-right-style: double;
@@ -89,18 +90,19 @@
 
 <body>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="selectric/jquery.selectric.min.js"></script>
 
 	<script src="//d3js.org/d3.v3.min.js"></script>
 	<script src="//d3js.org/queue.v1.min.js"></script>
 	<script src="//d3js.org/topojson.v1.min.js"></script>
-	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-	
+	<script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
 	<div id="extraContainer">
 		<div id="calculator">
 			<div id="lwcContainer"></div>
 			<div id="dataContainer">
 				<div style="margin-bottom: 10px;">
-					<label for="modelSelect">Model:</label>
+		
 						<select id="modelSelect">
 							<option selected>MIT LWC</option>
 							<option>MIDS LWC</option>
@@ -110,7 +112,7 @@
 				</div>
 
 				<div>
-					<label for="familySelect">Family:</label>
+		
 					<select id="familySelect">
 						<option selected value="1adult">1 Adult</option>
 						<option value="1adult1">1 Adult + 1 Child</option>
@@ -148,6 +150,10 @@
 	<script src="tabs.js"></script>
 
 	<script>
+		$(function(){
+		  $('select').selectric();
+		});
+
 		function normalize_fips(fips) {
 			if (fips[0] == '0') {
 				return fips.substr(1);
