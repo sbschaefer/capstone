@@ -15,9 +15,23 @@ function barchart(parentNode) {
   //y.domain([0, d3.max(data, function(d) { return d.value; })]);
   y.domain([0, 15000]); //to-do: fix this
 
+  var xAxisIcons = {
+    'food_cost': '\uf101',
+    'insurance_cost': '\uf100',
+    'healthcare_cost': '\uf103',
+    'transportation_cost': '\uf106',
+    'housing_cost': '\uf102',
+    'other_cost': '\uf105'
+  };
+
   var xAxis = d3.svg.axis()
       .scale(x)
-      .orient("bottom");
+      .orient("bottom")
+      .tickFormat(function(d) {
+        return xAxisIcons[d];
+      })
+      .tickPadding(10)
+      .tickSize(0);
 
   var yAxis = d3.svg.axis()
       .scale(y)
@@ -53,22 +67,21 @@ function barchart(parentNode) {
 
   this.update = function(dataRow) {
 
-    var columns = ['food_cost','insurance_cost','healthcare_cost',
-                    'housing_cost','transportation_cost','other_cost']
+    var columns = ['housing_cost', 'food_cost','healthcare_cost',
+                    'transportation_cost','insurance_cost','other_cost']
 
     var data = []
 
     columns.map(function(c) {
-      data.push({id: c.substring(0, 5), value: +dataRow[c]})
+      data.push({id: c, value: +dataRow[c]})
     })
 
     //columns = columns.map(function(c) {return c.substring(0, 5)})
 
+
+    var iconMap = this.xAxisIcons;
     x.domain(data.map(function(d) { return d.id; }));
-
-
-
-
+    
     //var dataById = d3.map(data, function(d) {return d.id;});
 
     if (this.xAxisRendered === undefined) {
