@@ -93,63 +93,65 @@
 	<script src="//d3js.org/d3.v3.min.js"></script>
 	<script src="//d3js.org/queue.v1.min.js"></script>
 	<script src="//d3js.org/topojson.v1.min.js"></script>
-	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> 
-<div id="extraContainer">
-	<div id="calculator">
-		<div id="lwcContainer"></div>
-		<div id="dataContainer">
-			<div style="margin-bottom: 10px;">
-			<label for="modelSelect">Model:</label><select id="modelSelect">
-				<option selected>MIT LWC</option>
-				<option>MIDS LWC</option>
-				<option>3x EITC</option>
-				<option>Basic Income</option>
-			</select>
-			</div>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+	
+	<div id="extraContainer">
+		<div id="calculator">
+			<div id="lwcContainer"></div>
+			<div id="dataContainer">
+				<div style="margin-bottom: 10px;">
+					<label for="modelSelect">Model:</label>
+						<select id="modelSelect">
+							<option selected>MIT LWC</option>
+							<option>MIDS LWC</option>
+							<option>3x EITC</option>
+							<option>Basic Income</option>
+						</select>
+				</div>
 
-			<div>
-			<label for="familySelect">Family:</label>
-			<select id="familySelect">
-				<option selected value="1adult">1 Adult</option>
-				<option value="1adult1">1 Adult + 1 Child</option>
-				<option value="1adult2">1 Adult + 2 Children</option>
-				<option value="1adult3">1 Adult + 3 Children</option>
-				<option value="2adults">2 Adults</option>
-				<option value="2adults1">2 Adults + 1 Child</option>
-				<option value="2adults2">2 Adults + 2 Children</option>
-				<option value="2adults3">2 Adults + 3 Children</option>
-			</select>
-			</div>
+				<div>
+					<label for="familySelect">Family:</label>
+					<select id="familySelect">
+						<option selected value="1adult">1 Adult</option>
+						<option value="1adult1">1 Adult + 1 Child</option>
+						<option value="1adult2">1 Adult + 2 Children</option>
+						<option value="1adult3">1 Adult + 3 Children</option>
+						<option value="2adults">2 Adults</option>
+						<option value="2adults1">2 Adults + 1 Child</option>
+						<option value="2adults2">2 Adults + 2 Children</option>
+						<option value="2adults3">2 Adults + 3 Children</option>
+					</select>
+				</div>
 
-			<div id="countyNameContainer">
-				<span id="countyName">&nbsp;</span>
-			</div>
+				<div id="countyNameContainer">
+					<span id="countyName">&nbsp;</span>
+				</div>
 
-			<div class="tabs tabs-style-linebox">
-				<nav>
-					<ul>
-						<li><a href='#costChart'><span>Costs</span></a></li>
-						<li><a href='#salaryHist'><span>Salary Breakdown</span></a></li>
-					</ul>
-			  	</nav>
-			
+				<div class="tabs tabs-style-linebox">
+					<nav>
+						<ul>
+							<li><a href='#costChart'><span>Costs</span></a></li>
+							<li><a href='#salaryHist'><span>Salary Breakdown</span></a></li>
+						</ul>
+					</nav>
 				
-					<div id="costChart"></div>
+					
+						<div id="costChart"></div>
 
-					<div id="salaryHist"></div>
-				
+						<div id="salaryHist"></div>
+					
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<script src="tabs.js"></script>
+	<script src="tabs.js"></script>
 
 	<script>
 		function normalize_fips(fips) {
 			if (fips[0] == '0') {
-		        return fips.substr(1);
-		    }
+				return fips.substr(1);
+			}
 
 			if (fips.endsWith('99999')) {
 				return fips.substring(0, fips.length - 5);
@@ -166,8 +168,6 @@
 	<script>
 		lwcMap = UsMap; // want to make this a proper object at some point...
 
-		
-
 		rateById = d3.map();
 		dataById = d3.map();
 		salaryById = d3.map();
@@ -183,7 +183,7 @@
 					rateById.set(fips, +d['total_cost']);
 					dataById.set(fips, d);
 
-		    }).defer(d3.csv, "data/county_names.csv", function(d) {
+			}).defer(d3.csv, "data/county_names.csv", function(d) {
 				
 				countyByFips.set(d['code'], {
 					'state': d['state'], 
@@ -203,34 +203,34 @@
 				salaryById.set(fips, data);
 			})
 
-	    lwcMap = new UsMap(document.getElementById('lwcContainer'), function() {
-	    	// This stuff is to handle race conditions between loading the csv and the map initialization.
-	    	dataDeferred.await(function(error) {
-		    	if (error) throw error;
-		    	console.log("data loaded");
+		lwcMap = new UsMap(document.getElementById('lwcContainer'), function() {
+			// This stuff is to handle race conditions between loading the csv and the map initialization.
+			dataDeferred.await(function(error) {
+				if (error) throw error;
+				console.log("data loaded");
 
-		    	lwcMap.recolor(rateById);
-	    	});
-	    });
+				lwcMap.recolor(rateById);
+			});
+		});
 
-	    lwcMap.addTooltipHandler(function(d) {
-	    	return "Living Wage: $" + (rateById.get(d.id)).toFixed(2);
-	    });
+		lwcMap.addTooltipHandler(function(d) {
+			return "Living Wage: $" + (rateById.get(d.id)).toFixed(2);
+		});
 
-	    var mainBarChart = new barchart(d3.select('#costChart'));
+		var mainBarChart = new barchart(d3.select('#costChart'));
 
-	    var salaryHistogram = new histogram(d3.select("#salaryHist"));
+		var salaryHistogram = new histogram(d3.select("#salaryHist"));
 
-	    // Hacky way to connect mouseover events to barchart
-	    lwcMap.overCounty = function(d) {
-	    	var fips = d.id;
-	    	mainBarChart.update(dataById.get(fips));
+		// Hacky way to connect mouseover events to barchart
+		lwcMap.overCounty = function(d) {
+			var fips = d.id;
+			mainBarChart.update(dataById.get(fips));
 
-	    	var county = countyByFips.get(fips);
-	    	var countyText = county.name + ", " + county.state;
-	    	document.getElementById('countyName').innerHTML = countyText;
+			var county = countyByFips.get(fips);
+			var countyText = county.name + ", " + county.state;
+			document.getElementById('countyName').innerHTML = countyText;
 
-	    	salaryHistogram.update(salary_columns, salaryById.get(fips));
-	    }
+			salaryHistogram.update(salary_columns, salaryById.get(fips));
+		}
 	</script>
 </body>
