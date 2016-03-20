@@ -126,13 +126,21 @@ http://tympanus.net/Development/TabStylesInspiration/css/tabs.css
 	}
 }
 
-	.tabs-style-linebox nav ul li {
+.tabs-style-linebox > nav > ul > li {
 	margin: 0 0.5em;
 	-webkit-flex: none;
 	flex: none;
 }
 
-.tabs-style-linebox nav a {
+.tabs-style-linebox > nav > ul > li:first-child {
+	margin: 0 0.5em 0 0;
+}
+
+.tabs-style-linebox > nav > ul > li:last-child {
+	margin: 0 0 0 0.5em;
+}
+
+.tabs-style-linebox > nav a {
 	padding: 0 1.5em;
 	color: #74777b;
 	font-weight: 700;
