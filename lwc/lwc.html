@@ -4,9 +4,9 @@
 	<title>Living Wage Calculator</title>
 
 	<meta charset="utf8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link rel="stylesheet" href="lwc.css" />
-	<link rel="stylesheet" href="tabs.css" />
 	<link rel="stylesheet" href="selectric/selectric.css" />
 
 	<style>
@@ -152,25 +152,10 @@
 					<span id="countyName">&nbsp;</span>
 				</div>
 
-				<div class="tabs tabs-style-linebox">
-					<nav>
-						<ul>
-							<li><a href='#costChart'><span>Costs</span></a></li>
-							<li><a href='#salaryHist'><span>Salary Breakdown</span></a></li>
-						</ul>
-					</nav>
-				
-					
-						<div id="costChart"></div>
-
-						<div id="salaryHist"></div>
-					
-				</div>
+				<div id="costChart"></div>
 			</div>
 		</div>
 	</div>
-
-	<script src="tabs.js"></script>
 
 	<script>
 		$(function(){
@@ -192,7 +177,6 @@
 
 	<script src="map.js"></script>
 	<script src="barchart.js"></script>
-	<script src="histogram.js"></script>
 
 	<script>
 		lwcMap = UsMap; // want to make this a proper object at some point...
@@ -248,8 +232,6 @@
 
 		var mainBarChart = new barchart(d3.select('#costChart'));
 
-		var salaryHistogram = new histogram(d3.select("#salaryHist"));
-
 		// Hacky way to connect mouseover events to barchart
 		lwcMap.overCounty = function(d) {
 			var fips = d.id;
@@ -258,8 +240,6 @@
 			var county = countyByFips.get(fips);
 			var countyText = county.name + ", " + county.state;
 			document.getElementById('countyName').innerHTML = countyText;
-
-			salaryHistogram.update(salary_columns, salaryById.get(fips));
 		}
 	</script>
 </body>
