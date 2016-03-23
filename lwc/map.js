@@ -1,10 +1,6 @@
 function UsMap(domRoot, onLoad) {
 
 	this.svg = d3.select(domRoot).append('div').append("svg")
-		//.attr("width", width)
-		//.attr("height", height);
-		  //.attr('width', "100%")
-		  //.attr('height', '100%')
 
 	this.world = this.svg.append('g');
 
@@ -47,14 +43,14 @@ function UsMap(domRoot, onLoad) {
 		.enter().append("path")
 		  .attr("d", path)
 		  .on('mouseover', function(d) {
-		  	if (this_.tip) {
+			if (this_.tip) {
 				this_.tip.show(d);
 			}
 
 			this_.overCounty(d);
 		  })
 		  .on('mouseout', function(d) {
-		  	if (this_.tip) {
+			if (this_.tip) {
 				this_.tip.hide(d);
 			}
 		  });
@@ -138,17 +134,17 @@ function UsMap(domRoot, onLoad) {
 		// Interpolate between 3 colors.
 	this.buildDivergentScale = function(lowerColor, midColor, upperColor) {
 	  var lowerColorScale = d3.scale.linear()
-	    .domain([0, .5])
-	    .range([lowerColor, midColor])
-	    .interpolate(d3.interpolateRgb)
+		.domain([0, .5])
+		.range([lowerColor, midColor])
+		.interpolate(d3.interpolateRgb)
 
 	  var upperColorScale = d3.scale.linear()
-	    .domain([.5, 1])
-	    .range([midColor, upperColor])
-	    .interpolate(d3.interpolateRgb)
+		.domain([.5, 1])
+		.range([midColor, upperColor])
+		.interpolate(d3.interpolateRgb)
 
 	  return function(val) {
-	    return (val <= .5) ? lowerColorScale(val) : upperColorScale(val);
+		return (val <= .5) ? lowerColorScale(val) : upperColorScale(val);
 	  };
 	}
 }
