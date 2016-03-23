@@ -243,10 +243,11 @@
 		lwcMap = UsMap; // want to make this a proper object at some point...
 
 		rateById = d3.map();
-		dataById = d3.map();
 		countyByFips = d3.map();
 		salaryById = d3.map();
 		percentUnderLivingWageById = d3.map();
+
+		currentFips = null;
 
 		salary_columns = ['10000', '15000', '20000', '25000', '30000', '35000', '40000', '45000', '50000', '60000', '75000', '100000', '125000', '150000', '200000', '200000+'];
 
@@ -323,17 +324,61 @@
 				row[c] = val;
 			});
 		}
+
+		var processFamilyCsv = function(d) {
+
+			var fips = normalize_fips(d['FIPS'])
+			processModelRow(d);
+
+			selectedData.set(fips, d);
+			rateById.set(fips, d[selectedModel.total]);
+				
+		}
+
+		var changeFamily = function(newFamily) {
+			selectedFamily = newFamily;
+			selectedData = family_data[selectedFamily];
+			rateById = d3.map();
+			percentUnderLivingWageById = d3.map();
+
+			if (selectedData) {
+
+				selectedData.entries().forEach(function(e) {
+					var fips = e.key;
+					var data = e.value;
+
+					rateById.set(fips, data[selectedModel.total]);
+				});
+
+				lwcMap.recolor(rateById);
+
+				if (currentFips) {
+					mainBarChart.update(selectedModel, selectedData.get(currentFips));
+				}
+
+			} else {
+				selectedData = d3.map();
+
+				queue().defer(d3.csv, familyDataFile(), processFamilyCsv).await(function(error) {
+					lwcMap.recolor(rateById);
+
+					if (currentFips) {
+						mainBarChart.update(selectedModel, selectedData.get(currentFips));
+					}
+
+					family_data[selectedFamily] = selectedData;
+				});
+			}
+		}
+
+		var familyDataFile = function() {
+			return "data/" + selectedFamily + ".csv";
+		}
 		
 		var dataDeferred = 
-			queue().defer(d3.csv, "data/" + selectedFamily + ".csv", function(d) {
-
-				var fips = normalize_fips(d['FIPS'])
-				processModelRow(d);
-
-				selectedData.set(fips, d);
-				rateById.set(fips, d[selectedModel.total]);
-					
-			}).defer(d3.csv, "data/county_names.csv", function(d) {
+			queue()
+			.defer(d3.csv, familyDataFile(), processFamilyCsv)
+			.defer(d3.csv, "data/county_names.csv", function(d) {
 				
 				countyByFips.set(d['code'], {
 					'state': d['state'], 
@@ -374,11 +419,20 @@
 		// Hacky way to connect mouseover events to barchart
 		lwcMap.overCounty = function(d) {
 			var fips = d.id;
+			currentFips = fips;
 			mainBarChart.update(selectedModel, selectedData.get(d.id));
 
 			var county = countyByFips.get(fips);
 			var countyText = county.name + ", " + county.state;
 			document.getElementById('countyName').innerHTML = countyText;
 		}
+
+		$('#familySelect').on('change', function(e) {
+			changeFamily(e.target.value);
+		});
+
+		$('#modelSelect').on('change', function(e) {
+			changeModel(e.target.value);
+		});
 	</script>
 </body>
