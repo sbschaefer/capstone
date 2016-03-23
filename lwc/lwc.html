@@ -126,25 +126,27 @@
 			<div id="dataContainer">
 				<div style="margin-bottom: 10px;">
 		
-						<select id="modelSelect">
-							<option selected>MIT LWC</option>
-							<option>MIDS LWC</option>
-							<option>3x EITC</option>
-							<option>Basic Income</option>
-						</select>
+					<select id="modelSelect">
+						<option value="mit_lwc">MIT LWC</option>
+						<option value="mids_lwc" selected>MIDS LWC</option>
+						<option value="3x_eitc">3x EITC</option>
+						<option value="basic_income">Basic Income</option>
+						<option value="mids_lwc_alt">MIDS LWC (Alternate)</option>
+					</select>
+
 				</div>
 
 				<div>
 		
 					<select id="familySelect">
-						<option selected value="1adult">1 Adult</option>
-						<option value="1adult1">1 Adult + 1 Child</option>
-						<option value="1adult2">1 Adult + 2 Children</option>
-						<option value="1adult3">1 Adult + 3 Children</option>
-						<option value="2adults">2 Adults</option>
-						<option value="2adults1">2 Adults + 1 Child</option>
-						<option value="2adults2">2 Adults + 2 Children</option>
-						<option value="2adults3">2 Adults + 3 Children</option>
+						<option selected value="1Adult">1 Adult</option>
+						<option value="1Adult1Child">1 Adult + 1 Child</option>
+						<option value="1Adult2Child">1 Adult + 2 Children</option>
+						<option value="1Adult3Child">1 Adult + 3 Children</option>
+						<option value="2Adult">2 Adults</option>
+						<option value="2Adult1Child">2 Adults + 1 Child</option>
+						<option value="2Adult2Child">2 Adults + 2 Children</option>
+						<option value="2aAult3Child">2 Adults + 3 Children</option>
 					</select>
 				</div>
 
@@ -173,6 +175,65 @@
 
 			return fips;
 		}
+
+		models = {
+			"mit_lwc": {
+				"housing": "Housing",
+				"food": "Food",
+				"childcare": "ChildCare",
+				"transportation": "Transportation",
+				"medical": "Medical",
+				"other": "Other",
+				"taxes": "Taxes",
+				"total": "MIT LWC"
+			},
+
+			"mids_lwc": {
+				"housing": "Housing",
+				"food": "MIDS Food",
+				"childcare": "MIDS ChildCare",
+				"transportation": "MIDS Transportation",
+				"medical": "MIDS Medical",
+				"other": "Other",
+				"taxes": "MIDS Taxes All",
+				"total": "MIDS LWC"
+			},
+
+			"3x_eitc": {
+				"housing": "Housing",
+				"food": "MIDS Food",
+				"childcare": "MIDS ChildCare",
+				"transportation": "MIDS Transportation",
+				"medical": "MIDS Medical",
+				"other": "Other",
+				"taxes": "3x EITC Tax",
+				"total": "MIDS LWC"
+			},
+
+			"basic_income": {
+				"housing": "Housing",
+				"food": "MIDS Food",
+				"childcare": "MIDS ChildCare",
+				"transportation": "MIDS Transportation",
+				"medical": "MIDS Medical",
+				"other": "Other",
+				"taxes": "Basic Income Tax",
+				"total": "MIDS LWC"
+			},
+
+			"mids_lwc_alt": {
+				"housing": "Housing",
+				"food": "MIDS Food",
+				"childcare": "MIDS ChildCare",
+				"transportation": "MIDS Transportation",
+				"medical": "MIDS Medical",
+				"other": "Other",
+				"taxes": "MIDS Taxes Universal",
+				"total": "MIDS LWC"
+			}
+		}
+
+		family_data = {}
 	</script>
 
 	<script src="map.js"></script>
@@ -199,7 +260,7 @@
 			}else {
 				var sb = salary_buckets;
 
-				var lw = +dataById.get(fips)['total_cost'];
+				var lw = selectedData.get(fips)[selectedModel.total];
 				var d = salaryById.get(fips);
 
 				var peopleBelowLW = 0;
@@ -219,7 +280,7 @@
 				var percentBelow = 1;
 
 				if (lastBucketIndexBelow < salary_buckets.length) {
-					
+
 					// Interpolate between lastBucketIndexBelow and lastBucketIndexBelow + 1
 					// to approximate how many people are below the living wage.
 					var lowerSalary = salary_buckets[lastBucketIndexBelow];
@@ -236,14 +297,42 @@
 			}
 		}
 
+		selectedFamily = document.getElementById('familySelect').value;
+		selectedModel = models[document.getElementById('modelSelect').value];
+		
+		selectedData = d3.map();
+		family_data[selectedFamily] = selectedData;
+
+		modelColumns = d3.set();
+		for (m in models) {
+			var model = models[m];
+			for (c in model) {
+				modelColumns.add(model[c]);
+			}
+		}
+		modelColumns = modelColumns.values();
+
+		var processModelRow = function(row) {
+			modelColumns.forEach(function(c) {
+				var val = row[c];
+				if (val === "#N/A") {
+					val = 0;
+				}else{
+					val = +val;
+				}
+				row[c] = val;
+			});
+		}
+		
 		var dataDeferred = 
-			queue().defer(d3.csv, "data/Calc.csv", function(d) {
+			queue().defer(d3.csv, "data/" + selectedFamily + ".csv", function(d) {
 
-					var fips = normalize_fips(d['fips'])
+				var fips = normalize_fips(d['FIPS'])
+				processModelRow(d);
 
-					rateById.set(fips, +d['total_cost']);
-					dataById.set(fips, d);
-
+				selectedData.set(fips, d);
+				rateById.set(fips, d[selectedModel.total]);
+					
 			}).defer(d3.csv, "data/county_names.csv", function(d) {
 				
 				countyByFips.set(d['code'], {
@@ -268,8 +357,16 @@
 		});
 
 		lwcMap.addTooltipHandler(function(d) {
-			return "<span>Living Wage: $" + (rateById.get(d.id)).toFixed(2) + '</span><br />'
-				+ '<span>Under LW: ~' + (percentUnderLivingWage(d.id)).toFixed(2) + '%</span>';
+			var dataRow = selectedData.get(d.id);
+			
+			if (dataRow) {
+				var lw = dataRow[selectedModel.total];
+
+				return "<span>Living Wage: $" + lw.toFixed(2) + '</span><br />'
+					+ '<span>Under LW: ~' + (percentUnderLivingWage(d.id)).toFixed(2) + '%</span>';
+			} else {
+				return "Apologies, Missing Data";
+			}
 		});
 
 		var mainBarChart = new barchart(d3.select('#costChart'));
@@ -277,7 +374,7 @@
 		// Hacky way to connect mouseover events to barchart
 		lwcMap.overCounty = function(d) {
 			var fips = d.id;
-			mainBarChart.update(dataById.get(fips));
+			mainBarChart.update(selectedModel, selectedData.get(d.id));
 
 			var county = countyByFips.get(fips);
 			var countyText = county.name + ", " + county.state;

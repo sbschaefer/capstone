@@ -13,15 +13,15 @@ function barchart(parentNode) {
       .range([height, 0]);
 
   //y.domain([0, d3.max(data, function(d) { return d.value; })]);
-  y.domain([0, 15000]); //to-do: fix this
+  y.domain([-13000, 15000]); //to-do: fix this
 
   var xAxisIcons = {
-    'food_cost': '\uf101',
-    'insurance_cost': '\uf100',
-    'healthcare_cost': '\uf103',
-    'transportation_cost': '\uf106',
-    'housing_cost': '\uf102',
-    'other_cost': '\uf105'
+    'food': '\uf101',
+    'insurance': '\uf100',
+    'medical': '\uf103',
+    'transportation': '\uf106',
+    'housing': '\uf102',
+    'other': '\uf105'
   };
 
   var xAxis = d3.svg.axis()
@@ -44,8 +44,6 @@ function barchart(parentNode) {
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
-
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
@@ -65,16 +63,21 @@ function barchart(parentNode) {
 
   svg.call(this.tip);
 
-  this.update = function(dataRow) {
+  this.update = function(model, dataRow) {
 
-    var columns = ['housing_cost', 'food_cost','healthcare_cost',
-                    'transportation_cost','insurance_cost','other_cost']
+    var columns = ['housing', 'food', 'medical', 'transportation', 'other', 'taxes']
 
     var data = []
 
-    columns.map(function(c) {
-      data.push({id: c, value: +dataRow[c]})
-    })
+    if (dataRow) {
+      columns.map(function(c) {
+        data.push({id: c, value: +dataRow[model[c]]})
+      });
+    } else {
+      columns.map(function(c) {
+        data.push({id: c, value: 0})
+      });
+    }
 
     //columns = columns.map(function(c) {return c.substring(0, 5)})
 

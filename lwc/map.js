@@ -121,8 +121,17 @@ function UsMap(domRoot, onLoad) {
 			d3.rgb(186, 0, 0)
 		);
 
+		var white = d3.rgb(255, 255, 255);
+
 		d3.selectAll(".counties > path").attr('fill', function(d) {
-			return colorScale(cdf(countyDataMap.get(d.id)));
+			var lw = countyDataMap.get(d.id);
+
+			if (lw) {
+				return colorScale(cdf(lw));
+			}else{
+				console.log("Unrecognized FIPS code: " + d.id);
+				return white;
+			}
 		});
 	};
 
@@ -142,17 +151,4 @@ function UsMap(domRoot, onLoad) {
 	    return (val <= .5) ? lowerColorScale(val) : upperColorScale(val);
 	  };
 	}
-
-	this.setCdfDivergent = function(lowerColor, midColor, upperColor) {
-	  var cdf = d3.scale.quantile()
-	    .domain(rateById.values())
-	    .range(percentiles)
-
-	  divergentScale = buildDivergentScale(lowerColor, midColor, upperColor);
-
-	  updateCountyFill(function(d) {
-	    val = cdf(rateById.get(d.id));
-	    return divergentScale(val);
-	  });
-}
 }
