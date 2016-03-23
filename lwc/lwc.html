@@ -126,7 +126,7 @@
 			<div id="dataContainer">
 				<div style="margin-bottom: 10px;">
 		
-					<select id="modelSelect">
+					<select id="modelSelect" disabled>
 						<option value="mit_lwc">MIT LWC</option>
 						<option value="mids_lwc" selected>MIDS LWC</option>
 						<option value="3x_eitc">3x EITC</option>
@@ -138,7 +138,7 @@
 
 				<div>
 		
-					<select id="familySelect">
+					<select id="familySelect" disabled>
 						<option selected value="1Adult">1 Adult</option>
 						<option value="1Adult1Child">1 Adult + 1 Child</option>
 						<option value="1Adult2Child">1 Adult + 2 Children</option>
@@ -174,6 +174,16 @@
 			}
 
 			return fips;
+		}
+
+		function enableBoxes() {
+			$('#familySelect').attr('disabled', false).selectric('refresh');
+			$('#modelSelect').attr('disabled', false).selectric('refresh');
+		}
+
+		function disableBoxes() {
+			$('#familySelect').attr('disabled', 'disabled').selectric('refresh');
+			$('#modelSelect').attr('disabled', 'disabled').selectric('refresh');
 		}
 
 		models = {
@@ -356,6 +366,7 @@
 		}
 
 		var changeFamily = function(newFamily) {
+
 			selectedFamily = newFamily;
 			selectedData = family_data[selectedFamily];
 			
@@ -365,6 +376,8 @@
 				recalculateRateById();
 				updateGraphs();
 			} else {
+				disableBoxes();
+
 				selectedData = d3.map();
 				rateById = d3.map();
 
@@ -372,6 +385,8 @@
 					updateGraphs();
 
 					family_data[selectedFamily] = selectedData;
+
+					enableBoxes();
 				});
 			}
 		}
@@ -410,6 +425,8 @@
 				console.log("data loaded");
 
 				lwcMap.recolor(rateById);
+
+				enableBoxes();
 			});
 		});
 
