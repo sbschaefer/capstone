@@ -146,7 +146,7 @@
 						<option value="2Adult">2 Adults</option>
 						<option value="2Adult1Child">2 Adults + 1 Child</option>
 						<option value="2Adult2Child">2 Adults + 2 Children</option>
-						<option value="2aAult3Child">2 Adults + 3 Children</option>
+						<option value="2Adult3Child">2 Adults + 3 Children</option>
 					</select>
 				</div>
 
@@ -207,7 +207,7 @@
 				"medical": "MIDS Medical",
 				"other": "Other",
 				"taxes": "3x EITC Tax",
-				"total": "MIDS LWC"
+				"total": "3x EITC"
 			},
 
 			"basic_income": {
@@ -218,7 +218,7 @@
 				"medical": "MIDS Medical",
 				"other": "Other",
 				"taxes": "Basic Income Tax",
-				"total": "MIDS LWC"
+				"total": "Basic Income"
 			},
 
 			"mids_lwc_alt": {
@@ -229,7 +229,7 @@
 				"medical": "MIDS Medical",
 				"other": "Other",
 				"taxes": "MIDS Taxes Universal",
-				"total": "MIDS LWC"
+				"total": "MIDS LWC 2"
 			}
 		}
 
@@ -335,40 +335,52 @@
 				
 		}
 
+		var recalculateRateById = function() {
+			rateById = d3.map();
+			selectedData.entries().forEach(function(e) {
+				var fips = e.key;
+				var data = e.value;
+
+				rateById.set(fips, data[selectedModel.total]);
+			});
+		}
+
+		var updateGraphs = function() {
+			percentUnderLivingWageById = d3.map();
+
+			lwcMap.recolor(rateById);
+
+			if (currentFips) {
+				mainBarChart.update(selectedModel, selectedData.get(currentFips));
+			}
+		}
+
 		var changeFamily = function(newFamily) {
 			selectedFamily = newFamily;
 			selectedData = family_data[selectedFamily];
-			rateById = d3.map();
+			
 			percentUnderLivingWageById = d3.map();
 
 			if (selectedData) {
-
-				selectedData.entries().forEach(function(e) {
-					var fips = e.key;
-					var data = e.value;
-
-					rateById.set(fips, data[selectedModel.total]);
-				});
-
-				lwcMap.recolor(rateById);
-
-				if (currentFips) {
-					mainBarChart.update(selectedModel, selectedData.get(currentFips));
-				}
-
+				recalculateRateById();
+				updateGraphs();
 			} else {
 				selectedData = d3.map();
+				rateById = d3.map();
 
 				queue().defer(d3.csv, familyDataFile(), processFamilyCsv).await(function(error) {
-					lwcMap.recolor(rateById);
-
-					if (currentFips) {
-						mainBarChart.update(selectedModel, selectedData.get(currentFips));
-					}
+					updateGraphs();
 
 					family_data[selectedFamily] = selectedData;
 				});
 			}
+		}
+
+		var changeModel = function(newModel) {
+			selectedModel = models[newModel];
+
+			recalculateRateById();
+			updateGraphs();
 		}
 
 		var familyDataFile = function() {
