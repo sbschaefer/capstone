@@ -129,7 +129,7 @@ function UsMap(domRoot, onLoad) {
 			if (lw) {
 				return colorScale(cdf(lw));
 			}else{
-				console.log("Unrecognized FIPS code: " + d.id);
+				//console.log("Unrecognized FIPS code: " + d.id);
 				return white;
 			}
 		});
