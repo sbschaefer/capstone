@@ -19,9 +19,12 @@ function barchart(parentNode) {
 	'food': '\uf101',
 	'insurance': '\uf100',
 	'medical': '\uf103',
-	'transportation': '\uf106',
+	'transportation': '\uf108',
 	'housing': '\uf102',
-	'other': '\uf105'
+	'other': '\uf106',
+	'benefits': '\uf014',
+	'taxes': '\uf107',
+	'childcare': '\uf105'
   };
 
   var xAxis = d3.svg.axis()
@@ -65,7 +68,7 @@ function barchart(parentNode) {
 
   this.update = function(model, dataRow) {
 
-	var columns = ['housing', 'food', 'medical', 'transportation', 'other', 'taxes']
+	var columns = ['housing', 'food', 'childcare', 'medical', 'transportation', 'other', 'taxes']
 
 	var data = []
 
@@ -83,7 +86,7 @@ function barchart(parentNode) {
 
 
 	var iconMap = this.xAxisIcons;
-	x.domain(data.map(function(d) { return d.id; }));
+	x.domain(columns);
 	
 	//var dataById = d3.map(data, function(d) {return d.id;});
 
@@ -101,17 +104,14 @@ function barchart(parentNode) {
 
 	bars.enter().append("rect")
 		.attr("class", "bar")
-		.attr("x", function(d) { return x(d.id); })
-		.attr("width", x.rangeBand())
-		.attr("y", function(d) { return y(d.value); })
-		.attr("height", function(d) { return height - y(d.value); })
 		.on('mouseover', this.tip.show)
 		.on('mouseout', this.tip.hide);
 
 	bars.attr("class", "bar")
 		.attr("x", function(d) { return x(d.id); })
 		.attr("width", x.rangeBand())
-		.attr("y", function(d) { return y(d.value); })
-		.attr("height", function(d) { return height - y(d.value); })
+		.attr("y", function(d) { return y(Math.max(0, d.value)); })
+		//.attr("height", function(d) { return height - y(d.value); })
+		.attr("height", function(d) { return Math.abs(y(d.value) - y(0)); })
   }
 }
