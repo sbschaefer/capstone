@@ -95,13 +95,17 @@ function UsMap(domRoot, onLoad) {
 		if (this.percentiles) {
 			var percentiles = this.percentiles;
 		} else {
-			var percentiles = d3.range(0, 1, .01)
+			var percentiles = d3.range(0, 1, .005)
 			percentiles.push(1)
 			this.percentiles = percentiles;
 		}
 
+		var totals = countyDataMap.values();
+		var min = d3.min(totals);
+		var max = d3.max(totals);
+
 		var cdf = d3.scale.quantile()
-			.domain(countyDataMap.values())
+			.domain(totals)
 			.range(percentiles);
 
 		// var colorScale = d3.scale.linear()
@@ -129,6 +133,54 @@ function UsMap(domRoot, onLoad) {
 				return white;
 			}
 		});
+
+		var legendPoints = [.25, .5, .75];
+		var minLegend = cdf.invertExtent(0)[0]
+		var maxLegend = cdf.invertExtent(1)[1]
+
+		var legendDomain = [minLegend]
+		legendPoints.forEach(function(p) {
+			var val = cdf.invertExtent(p);
+			val = val[0] + (val[1] - val[0]) / 2;
+
+			legendDomain.push(val)
+		});
+		legendDomain.push(maxLegend);
+
+		var legendColorScale = d3.scale.ordinal();
+		legendColorScale.domain(legendDomain);
+		legendColorScale.range(legendDomain.map(function(d) {
+			return d3.rgb(colorScale(cdf(d)));
+		}));
+
+		if (this.legend) {
+			var prevLegend = this.svg.select('.colorLegend');
+			prevLegend.remove();
+		}
+
+		
+		var labelFormat = d3.format('$,.02f');
+
+		this.legend = d3.legend.color()
+			
+			.labels(legendDomain.map(function(d) {
+				// d3.legend's labelFormat not working
+				return labelFormat(d);
+			}))
+			.scale(legendColorScale);
+
+		var rect = this.svg.node().getBoundingClientRect();
+
+		var width = rect.width - 115;
+		var height = rect.height - 90;
+
+		this.svg.append('g')
+			.attr('class', 'colorLegend')
+			.attr('transform', 'translate(' + width + ', ' + height + ')');
+
+		this.svg.select('.colorLegend').call(this.legend)
+			
+
 	};
 
 		// Interpolate between 3 colors.
