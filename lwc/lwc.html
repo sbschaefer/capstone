@@ -85,9 +85,17 @@
 	#countyNameContainer {
 		text-align: center;
 		font-weight: bold;
-		font-size: larger;
+
 		margin-top: 20px;
+	}
+
+	#countyName {
+		font-size: larger;
 		margin-bottom: 20px;
+	}
+
+	#chartName{
+		color: grey;
 	}
 
 	/* Automatically generated from: Flaticon.woff 0.0 */
@@ -168,7 +176,8 @@
 				</div>
 
 				<div id="countyNameContainer">
-					<span id="countyName">&nbsp;</span>
+					<div id="countyName">&nbsp;</div>
+					<div id="chartName">Breakdown of <span id="chartNameLW"></span></div>
 				</div>
 
 				<div id="costChart"></div>
@@ -449,17 +458,22 @@
 
 		var lwFormat = d3.format("$,.02");
 
+		getLWForFips = function(fips) {
+			var dataRow = selectedData.get(fips);
+			var lw = dataRow[selectedModel.total];
+
+			return lwFormat(lw);
+		}
+
 		lwcMap.addTooltipHandler(function(d) {
-			var dataRow = selectedData.get(d.id);
+			
 			var county = countyByFips.get(d.id);
 
 			var tip = "<span>" + county.name + "</span><br />";
 			
-			if (dataRow) {
-				var lw = dataRow[selectedModel.total];
-
+			if (selectedData.has(d.id)) {
 				return tip +
-					"<span>Living Wage: " + lwFormat(lw) + '</span><br />' +
+					"<span>Living Wage: " + getLWForFips(d.id) + '</span><br />' +
 					'<span>Under LW: ~' + (percentUnderLivingWage(d.id)).toFixed(2) + '%</span>';
 			} else {
 				return tip + "Apologies, Missing Data";
@@ -472,11 +486,18 @@
 		lwcMap.overCounty = function(d) {
 			var fips = d.id;
 			currentFips = fips;
-			mainBarChart.update(selectedModel, selectedData.get(d.id));
+			var dataRow = selectedData.get(fips);
 
-			var county = countyByFips.get(fips);
-			var countyText = county.name + ", " + county.state;
-			document.getElementById('countyName').innerHTML = countyText;
+			if (dataRow) {
+
+				mainBarChart.update(selectedModel, dataRow);
+
+				var county = countyByFips.get(fips);
+				var countyText = county.name + ", " + county.state;
+				document.getElementById('countyName').innerHTML = countyText;
+
+				document.getElementById('chartNameLW').innerHTML = getLWForFips(fips);
+			}
 		}
 
 		$('#familySelect').on('change', function(e) {
