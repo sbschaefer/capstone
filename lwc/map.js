@@ -46,13 +46,18 @@ function UsMap(domRoot, onLoad) {
 			if (this_.tip) {
 				this_.tip.show(d);
 			}
-
-			this_.overCounty(d);
 		  })
 		  .on('mouseout', function(d) {
 			if (this_.tip) {
 				this_.tip.hide(d);
 			}
+		  })
+		  .on('click', function(d) {
+		  	if (this_.zooming !== true) {
+		  		this_.overCounty(d);
+		  	}
+
+		  	this_.zooming = false;
 		  });
 
 		world.append("path")
@@ -80,9 +85,12 @@ function UsMap(domRoot, onLoad) {
 		// https://bl.ocks.org/mbostock/8fadc5ac9c2a9e7c5ba2
 		var world = this.world;
 
+		var this_ = this;
+
 		var zoom = d3.behavior.zoom()
 			.scaleExtent([1, 10])
 			.on("zoom", function() {
+				this_.zooming = true;
 				world.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");  	
 			});
 

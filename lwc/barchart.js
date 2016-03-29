@@ -72,9 +72,13 @@ function barchart(parentNode) {
 
 	var data = []
 
+	var vals = [];
+
 	if (dataRow) {
 	  columns.map(function(c) {
-		data.push({id: c, value: +dataRow[model[c]]})
+	  	var val = +dataRow[model[c]];
+		data.push({id: c, value: val})
+		vals.push(val);
 	  });
 	} else {
 	  columns.map(function(c) {
@@ -96,6 +100,17 @@ function barchart(parentNode) {
 			.attr("transform", "translate(0," + height + ")")
 			.call(xAxis);
 			this.xAxisRendered = true;
+	}
+
+	//Rescale y-axis
+	if (dataRow) {
+		var dataMin = d3.min(vals);
+		var dataMax = d3.max(vals);
+
+		y.domain([dataMin, dataMax]);
+
+		svg.select('.y.axis')
+			.call(yAxis);
 	}
 
 

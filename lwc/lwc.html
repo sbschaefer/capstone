@@ -447,16 +447,22 @@
 			});
 		});
 
+		var lwFormat = d3.format("$,.02");
+
 		lwcMap.addTooltipHandler(function(d) {
 			var dataRow = selectedData.get(d.id);
+			var county = countyByFips.get(d.id);
+
+			var tip = "<span>" + county.name + "</span><br />";
 			
 			if (dataRow) {
 				var lw = dataRow[selectedModel.total];
 
-				return "<span>Living Wage: $" + lw.toFixed(2) + '</span><br />'
-					+ '<span>Under LW: ~' + (percentUnderLivingWage(d.id)).toFixed(2) + '%</span>';
+				return tip +
+					"<span>Living Wage: " + lwFormat(lw) + '</span><br />' +
+					'<span>Under LW: ~' + (percentUnderLivingWage(d.id)).toFixed(2) + '%</span>';
 			} else {
-				return "Apologies, Missing Data";
+				return tip + "Apologies, Missing Data";
 			}
 		});
 
