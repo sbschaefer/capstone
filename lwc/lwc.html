@@ -116,6 +116,18 @@
 		cursor: default;
 	}
 
+	.hidden{
+		display: none;
+	}
+
+	#initialBarchartHolder > span {
+		width: 300px;
+		height: 584px;
+		display: table-cell;
+		vertical-align: middle;
+		text-align: center
+	}
+
 	</style>
 </head>
 
@@ -175,12 +187,19 @@
 					</select>
 				</div>
 
-				<div id="countyNameContainer">
-					<div id="countyName">&nbsp;</div>
-					<div id="chartName">Breakdown of <span id="chartNameLW"></span></div>
+				<div id="barchartContainer" class="hidden">
+					<div id="countyNameContainer">
+						<div id="countyName">&nbsp;</div>
+						<div id="chartName">Breakdown of <span id="chartNameLW"></span></div>
+					</div>
+
+					<div id="costChart"></div>
 				</div>
 
-				<div id="costChart"></div>
+				<div id="initialBarchartHolder">
+					<span>Click on a county to see a cost breakdown</span>
+				</div>
+
 			</div>
 		</div>
 	</div>
@@ -482,6 +501,8 @@
 
 		var mainBarChart = new barchart(d3.select('#costChart'));
 
+		var chartShown = false;
+
 		// Hacky way to connect mouseover events to barchart
 		lwcMap.overCounty = function(d) {
 			var fips = d.id;
@@ -497,6 +518,15 @@
 				document.getElementById('countyName').innerHTML = countyText;
 
 				document.getElementById('chartNameLW').innerHTML = getLWForFips(fips);
+			}
+
+			if (!chartShown) {
+				chartShown = true;
+
+				var ibhDiv = document.getElementById('initialBarchartHolder');
+				ibhDiv.parentElement.removeChild(ibhDiv);
+
+				document.getElementById('barchartContainer').className = '';
 			}
 		}
 

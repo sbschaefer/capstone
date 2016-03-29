@@ -2,7 +2,7 @@
 // Adapted From: https://bl.ocks.org/mbostock/3885304
 function barchart(parentNode) {
 
-  var margin = {top: 20, right: 20, bottom: 30, left: 40},
+  var margin = {top: 20, right: 20, bottom: 30, left: 50},
 	  width = 300 - margin.left - margin.right,
 	  height = 500 - margin.top - margin.bottom;
 
@@ -11,9 +11,6 @@ function barchart(parentNode) {
 
   var y = d3.scale.linear()
 	  .range([height, 0]);
-
-  //y.domain([0, d3.max(data, function(d) { return d.value; })]);
-  y.domain([-13000, 15000]); //to-do: fix this
 
   var xAxisIcons = {
 	'food': '\uf101',
@@ -39,7 +36,8 @@ function barchart(parentNode) {
   var yAxis = d3.svg.axis()
 		.scale(y)
 		.orient("left")
-		.ticks(10);
+		.ticks(10)
+		.tickFormat(d3.format("$,.02"));
 
   var svg = parentNode.append("svg")
 		.attr("width", width + margin.left + margin.right)
@@ -49,13 +47,6 @@ function barchart(parentNode) {
 
   svg.append("g")
 		.attr("class", "y axis")
-		.call(yAxis)
-	.append("text")
-		.attr("transform", "rotate(-90)")
-		.attr("y", 6)
-		.attr("dy", ".71em")
-		.style("text-anchor", "end")
-		.text("Cost");
 
   this.tip = d3.tip()
 	.attr('class', 'bc-d3-tip')
