@@ -89,11 +89,11 @@ function barchart(parentNode) {
 			this.xAxisRendered = true;
 		}
 
+		var dataMin = d3.min(vals);
+		var dataMax = d3.max(vals);
+
 		//Rescale y-axis
 		if (dataRow) {
-			var dataMin = d3.min(vals);
-			var dataMax = d3.max(vals);
-
 			y.domain([dataMin, dataMax]);
 
 			svg.select('.y.axis')
@@ -112,6 +112,8 @@ function barchart(parentNode) {
 			.attr("width", x.rangeBand())
 			.attr("y", function(d) { return y(Math.max(0, d.value)); })
 			//.attr("height", function(d) { return height - y(d.value); })
-			.attr("height", function(d) { return Math.abs(y(d.value) - y(0)); })
+			.attr("height", function(d) { 
+				return Math.abs(y(d.value) - y(Math.max(dataMin, 0)));
+			})
 	}
 }
