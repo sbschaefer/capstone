@@ -83,9 +83,7 @@ function UsMap(domRoot, onLoad) {
 		var zoom = d3.behavior.zoom()
 			.scaleExtent([1, 10])
 			.on("zoom", function() {
-				console.log("zoom zoom!");
-
-				this_.zooming = d3.event.sourceEvent != null;
+				this_.zooming = d3.event.sourceEvent != null && d3.event.sourceEvent.type === 'mousemove';
 				world.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");  	
 			});
 
