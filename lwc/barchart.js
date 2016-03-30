@@ -77,14 +77,9 @@ function barchart(parentNode) {
 			});
 		}
 
-		//columns = columns.map(function(c) {return c.substring(0, 5)})
-
-
 		var iconMap = this.xAxisIcons;
 		x.domain(columns);
 		
-		//var dataById = d3.map(data, function(d) {return d.id;});
-
 		if (this.xAxisRendered === undefined) {
 				svg.append("g")
 						.attr("class", "x axis")
@@ -104,7 +99,6 @@ function barchart(parentNode) {
 			svg.select('.y.axis')
 					.call(yAxis);
 		}
-
 
 		var bars = svg.selectAll(".bar").data(data);
 
