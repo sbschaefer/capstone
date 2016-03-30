@@ -33,33 +33,33 @@ function UsMap(domRoot, onLoad) {
 			.projection(projection);
 
 		world.append("g")
-		  .attr("class", "counties")
+			.attr("class", "counties")
 		.selectAll("path")
-		  .data(topojson.feature(map, map.objects.counties).features)
+			.data(topojson.feature(map, map.objects.counties).features)
 		.enter().append("path")
-		  .attr("d", path)
-		  .on('mouseover', function(d) {
+			.attr("d", path)
+			.on('mouseover', function(d) {
 			if (this_.tip) {
 				this_.tip.show(d);
 			}
-		  })
-		  .on('mouseout', function(d) {
+			})
+			.on('mouseout', function(d) {
 			if (this_.tip) {
 				this_.tip.hide(d);
 			}
-		  })
-		  .on('click', function(d) {
-		  	if (this_.zooming !== true) {
-		  		this_.overCounty(d);
-		  	}
+			})
+			.on('click', function(d) {
+				if (this_.zooming !== true) {
+					this_.overCounty(d);
+				}
 
-		  	this_.zooming = false;
-		  });
+				this_.zooming = false;
+			});
 
 		world.append("path")
-		  .datum(topojson.mesh(map, map.objects.states, function(a, b) { return a !== b; }))
-		  .attr("class", "states")
-		  .attr("d", path);
+			.datum(topojson.mesh(map, map.objects.states, function(a, b) { return a !== b; }))
+			.attr("class", "states")
+			.attr("d", path);
 
 		this.addZoom();
 	};
@@ -69,10 +69,10 @@ function UsMap(domRoot, onLoad) {
 	 */
 	this.addTooltipHandler = function(handler) {
 		this.tip = d3.tip()
-		  .attr('class', 'd3-tip')
-		  .offset([-10, 0])
-		  .direction('n')
-		  .html(handler);
+			.attr('class', 'd3-tip')
+			.offset([-10, 0])
+			.direction('n')
+			.html(handler);
 
 		svg.call(this.tip);
 	};
@@ -84,7 +84,7 @@ function UsMap(domRoot, onLoad) {
 			.scaleExtent([1, 10])
 			.on("zoom", function() {
 				this_.zooming = d3.event.sourceEvent != null && d3.event.sourceEvent.type === 'mousemove';
-				world.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");  	
+				world.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");    
 			});
 
 		svg.call(zoom).call(zoom.event);
@@ -174,18 +174,18 @@ function UsMap(domRoot, onLoad) {
 
 		// Interpolate between 3 colors.
 	this.buildDivergentScale = function(lowerColor, midColor, upperColor) {
-	  var lowerColorScale = d3.scale.linear()
-		.domain([0, .5])
-		.range([lowerColor, midColor])
-		.interpolate(d3.interpolateRgb)
+		var lowerColorScale = d3.scale.linear()
+			.domain([0, .5])
+			.range([lowerColor, midColor])
+			.interpolate(d3.interpolateRgb)
 
-	  var upperColorScale = d3.scale.linear()
-		.domain([.5, 1])
-		.range([midColor, upperColor])
-		.interpolate(d3.interpolateRgb)
+		var upperColorScale = d3.scale.linear()
+			.domain([.5, 1])
+			.range([midColor, upperColor])
+			.interpolate(d3.interpolateRgb)
 
-	  return function(val) {
-		return (val <= .5) ? lowerColorScale(val) : upperColorScale(val);
-	  };
+		return function(val) {
+			return (val <= .5) ? lowerColorScale(val) : upperColorScale(val);
+		};
 	}
 }
