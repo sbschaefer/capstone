@@ -18,58 +18,22 @@
 		height: inherit;
 	}
 
-
-
 	#calculator {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		width: 100vw;
+		height: 100vh;
 	}
 
-	@media (min-aspect-ratio: 16/11) {
-		#calculator {
-			width: 100vw;
-			height: 100vh;
-		}
-
-		#lwcContainer {
-			width: 100%;
-			height: 100%;
-		}
-
-		#lwcContainer > div {
-			width: 100%;
-			height: 100%;
-		}
-
-		#extraContainer {
-			width: 100vw;
-			height: 100vh;
-		}
+	#lwcContainer {
+		width: 100%;
+		height: 100%;
 	}
 
-	@media (max-aspect-ratio: 16/11) {
-		#calculator {
-			width: 100vw;
-			height: 100vh;
-		}
-
-		#lwcContainer > div {
-			height: 100%;
-			width: 100%;
-		}
-
-		#lwcContainer {
-			height: 100%;
-			width: 100%;
-		}
-
-		#extraContainer {
-			display: flex;
-			align-items: center;
-			height: 100%;
-
-		}
+	#lwcContainer > div {
+		width: 100%;
+		height: 100%;
 	}
 
 	body {
@@ -157,50 +121,48 @@
 		span.innerHTML = charsList;
 	</script>
 -->
-	<div id="extraContainer">
-		<div id="calculator">
-			<div id="lwcContainer"></div>
-			<div id="dataContainer">
-				<div style="margin-bottom: 10px;">
-		
-					<select id="modelSelect" disabled>
-						<option value="mit_lwc">MIT LWC</option>
-						<option value="mids_lwc" selected>MIDS LWC</option>
-						<option value="3x_eitc">3x EITC</option>
-						<option value="basic_income">Basic Income</option>
-						<option value="mids_lwc_alt">MIDS LWC (Alternate)</option>
-					</select>
-
-				</div>
-
-				<div>
-		
-					<select id="familySelect" disabled>
-						<option selected value="1Adult">1 Adult</option>
-						<option value="1Adult1Child">1 Adult + 1 Child</option>
-						<option value="1Adult2Child">1 Adult + 2 Children</option>
-						<option value="1Adult3Child">1 Adult + 3 Children</option>
-						<option value="2Adult">2 Adults</option>
-						<option value="2Adult1Child">2 Adults + 1 Child</option>
-						<option value="2Adult2Child">2 Adults + 2 Children</option>
-						<option value="2Adult3Child">2 Adults + 3 Children</option>
-					</select>
-				</div>
-
-				<div id="barchartContainer" class="hidden">
-					<div id="countyNameContainer">
-						<div id="countyName">&nbsp;</div>
-						<div id="chartName">Breakdown of <span id="chartNameLW"></span></div>
-					</div>
-
-					<div id="costChart"></div>
-				</div>
-
-				<div id="initialBarchartHolder">
-					<span>Click on a county to see a cost breakdown</span>
-				</div>
+	<div id="calculator">
+		<div id="lwcContainer"></div>
+		<div id="dataContainer">
+			<div style="margin-bottom: 10px;">
+	
+				<select id="modelSelect" disabled>
+					<option value="mit_lwc">MIT LWC</option>
+					<option value="mids_lwc" selected>MIDS LWC</option>
+					<option value="3x_eitc">3x EITC</option>
+					<option value="basic_income">Basic Income</option>
+					<option value="mids_lwc_alt">MIDS LWC (Alternate)</option>
+				</select>
 
 			</div>
+
+			<div>
+	
+				<select id="familySelect" disabled>
+					<option selected value="1Adult">1 Adult</option>
+					<option value="1Adult1Child">1 Adult + 1 Child</option>
+					<option value="1Adult2Child">1 Adult + 2 Children</option>
+					<option value="1Adult3Child">1 Adult + 3 Children</option>
+					<option value="2Adult">2 Adults</option>
+					<option value="2Adult1Child">2 Adults + 1 Child</option>
+					<option value="2Adult2Child">2 Adults + 2 Children</option>
+					<option value="2Adult3Child">2 Adults + 3 Children</option>
+				</select>
+			</div>
+
+			<div id="barchartContainer" class="hidden">
+				<div id="countyNameContainer">
+					<div id="countyName">&nbsp;</div>
+					<div id="chartName">Breakdown of <span id="chartNameLW"></span></div>
+				</div>
+
+				<div id="costChart"></div>
+			</div>
+
+			<div id="initialBarchartHolder">
+				<span>Click on a county to see a cost breakdown</span>
+			</div>
+
 		</div>
 	</div>
 
