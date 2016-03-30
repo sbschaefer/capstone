@@ -1,8 +1,8 @@
 function UsMap(domRoot, onLoad) {
 
-	this.svg = d3.select(domRoot).append('div').append("svg")
+	var svg = d3.select(domRoot).append('div').append("svg")
 
-	this.world = this.svg.append('g');
+	var world = svg.append('g');
 
 	var this_ = this;
 
@@ -20,9 +20,7 @@ function UsMap(domRoot, onLoad) {
 
 	this.drawMapGeometry = function(map) {
 
-		var world = this.world;
-
-		var rect = this.svg.node().getBoundingClientRect();
+		var rect = svg.node().getBoundingClientRect();
 
 		var width = rect.width;
 		var height = rect.height;
@@ -33,8 +31,6 @@ function UsMap(domRoot, onLoad) {
 
 		var path = d3.geo.path()
 			.projection(projection);
-
-		var this_ = this;
 
 		world.append("g")
 		  .attr("class", "counties")
@@ -78,14 +74,11 @@ function UsMap(domRoot, onLoad) {
 		  .direction('n')
 		  .html(handler);
 
-		this.svg.call(this.tip);
+		svg.call(this.tip);
 	};
 
 	this.addZoom = function() {
 		// https://bl.ocks.org/mbostock/8fadc5ac9c2a9e7c5ba2
-		var world = this.world;
-
-		var this_ = this;
 
 		var zoom = d3.behavior.zoom()
 			.scaleExtent([1, 10])
@@ -96,8 +89,10 @@ function UsMap(domRoot, onLoad) {
 				world.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");  	
 			});
 
-		this.svg.call(zoom).call(zoom.event);
+		svg.call(zoom).call(zoom.event);
 	};
+
+	var white = d3.rgb(255, 255, 255);
 
 	this.recolor = function(countyDataMap) {
 
@@ -111,27 +106,16 @@ function UsMap(domRoot, onLoad) {
 		}
 
 		var totals = countyDataMap.values();
-		var min = d3.min(totals);
-		var max = d3.max(totals);
-
+		
 		var cdf = d3.scale.quantile()
 			.domain(totals)
 			.range(percentiles);
-
-		// var colorScale = d3.scale.linear()
-		// 	.domain([0, 1])
-		// 	//.range([d3.rgb(237, 248, 233), d3.rgb(0, 109, 44)])
-		// 	//.range([d3.rgb(0, 0, 0), d3.rgb(255, 0, 0)])
-		// 	.range([d3.rgb(221, 242, 215), d3.rgb(0, 109, 44)])
-		// 	.interpolate(d3.interpolateRgb);
 
 		var colorScale = this.buildDivergentScale(
 			d3.rgb(0, 0, 217),
 			d3.rgb(188, 188, 188),
 			d3.rgb(186, 0, 0)
 		);
-
-		var white = d3.rgb(255, 255, 255);
 
 		d3.selectAll(".counties > path").attr('fill', function(d) {
 			var lw = countyDataMap.get(d.id);
@@ -164,11 +148,10 @@ function UsMap(domRoot, onLoad) {
 		}));
 
 		if (this.legend) {
-			var prevLegend = this.svg.select('.colorLegend');
+			var prevLegend = svg.select('.colorLegend');
 			prevLegend.remove();
 		}
 
-		
 		var labelFormat = d3.format('$,.02f');
 
 		this.legend = d3.legend.color()
@@ -179,18 +162,16 @@ function UsMap(domRoot, onLoad) {
 			}))
 			.scale(legendColorScale);
 
-		var rect = this.svg.node().getBoundingClientRect();
+		var rect = svg.node().getBoundingClientRect();
 
 		var width = rect.width - 115;
 		var height = rect.height - 90;
 
-		this.svg.append('g')
+		svg.append('g')
 			.attr('class', 'colorLegend')
 			.attr('transform', 'translate(' + width + ', ' + height + ')');
 
-		this.svg.select('.colorLegend').call(this.legend)
-			
-
+		svg.select('.colorLegend').call(this.legend)
 	};
 
 		// Interpolate between 3 colors.
