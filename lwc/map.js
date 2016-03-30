@@ -145,29 +145,27 @@ function UsMap(domRoot, onLoad) {
 			return d3.rgb(colorScale(cdf(d)));
 		}));
 
-		if (this.legend) {
-			var prevLegend = svg.select('.colorLegend');
-			prevLegend.remove();
-		}
-
 		var labelFormat = d3.format('$,.02f');
 
-		this.legend = d3.legend.color()
-			
+		if (this.legend === undefined) {
+			this.legend = d3.legend.color()
+
+			var rect = svg.node().getBoundingClientRect();
+
+			var width = rect.width - 115;
+			var height = rect.height - 90;
+
+			svg.append('g')
+				.attr('class', 'colorLegend')
+				.attr('transform', 'translate(' + width + ', ' + height + ')');
+		}
+		
+		this.legend
+			.scale(legendColorScale)
 			.labels(legendDomain.map(function(d) {
 				// d3.legend's labelFormat not working
 				return labelFormat(d);
-			}))
-			.scale(legendColorScale);
-
-		var rect = svg.node().getBoundingClientRect();
-
-		var width = rect.width - 115;
-		var height = rect.height - 90;
-
-		svg.append('g')
-			.attr('class', 'colorLegend')
-			.attr('transform', 'translate(' + width + ', ' + height + ')');
+			}));
 
 		svg.select('.colorLegend').call(this.legend)
 	};
