@@ -22,7 +22,7 @@ function UsMap(domRoot, onLoad) {
 
 	var svg = d3.select(domRoot).append('div').append("svg")
 
-	var world = svg.append('g');
+	var world = svg.append('g').attr('class', 'world');
 
 	var this_ = this;
 
@@ -38,9 +38,37 @@ function UsMap(domRoot, onLoad) {
 			}
 		});
 
+	this_.resizeRatio = 1;
+
 	this.resize = function() {
 		this_.positionLegend();
+
+		if (this_.originalWidth) {
+			var rect = svg.node().getBoundingClientRect();
+
+			var width = rect.width;
+
+			this_.resizeRatio = width / this_.originalWidth;
+
+			var nextWorldHeight = this_.worldRect.height * (this_.zoomScale * this_.resizeRatio);
+
+			var deltaY = (nextWorldHeight - world.node().getBoundingClientRect().height);
+
+			this_.zoomTranslate[1] -= deltaY;
+
+			this_.zoom.translate(this_.zoomTranslate);
+
+			this_.updateZoom();
+		}
 	};
+
+	this.updateZoom = function() {
+		var scale = this_.zoomScale * this_.resizeRatio;
+
+		console.log('update zoom');
+
+		world.attr("transform", "translate(" + this_.zoomTranslate + ")scale(" + scale + ")");
+	}
 
 	window.addEventListener("optimizedResize", function() {
     	this_.resize();
@@ -52,6 +80,8 @@ function UsMap(domRoot, onLoad) {
 
 		var width = rect.width;
 		var height = rect.height;
+
+		this.originalWidth = width;
 
 		var projection = d3.geo.albersUsa()
 			.scale(width * 1.22)
@@ -89,6 +119,10 @@ function UsMap(domRoot, onLoad) {
 			.attr("class", "states")
 			.attr("d", path);
 
+
+		this_.worldRect = world.node().getBoundingClientRect();
+
+
 		this.addZoom();
 	};
 
@@ -112,10 +146,15 @@ function UsMap(domRoot, onLoad) {
 			.scaleExtent([1, 10])
 			.on("zoom", function() {
 				this_.zooming = d3.event.sourceEvent != null && d3.event.sourceEvent.type === 'mousemove';
-				world.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");    
+
+				this_.zoomTranslate = d3.event.translate;
+				this_.zoomScale = d3.event.scale;
+
+				this_.updateZoom();
 			});
 
 		svg.call(zoom).call(zoom.event);
+		this_.zoom = zoom;
 	};
 
 	var white = d3.rgb(255, 255, 255);
