@@ -1,3 +1,23 @@
+// From; https://developer.mozilla.org/en-US/docs/Web/Events/resize
+;(function() {
+    var throttle = function(type, name, obj) {
+        obj = obj || window;
+        var running = false;
+        var func = function() {
+            if (running) { return; }
+            running = true;
+             requestAnimationFrame(function() {
+                obj.dispatchEvent(new CustomEvent(name));
+                running = false;
+            });
+        };
+        obj.addEventListener(type, func);
+    };
+
+    /* init - you can init any event */
+    throttle("resize", "optimizedResize");
+})();
+
 function UsMap(domRoot, onLoad) {
 
 	var svg = d3.select(domRoot).append('div').append("svg")
@@ -17,6 +37,14 @@ function UsMap(domRoot, onLoad) {
 				onLoad();
 			}
 		});
+
+	this.resize = function() {
+		this_.positionLegend();
+	};
+
+	window.addEventListener("optimizedResize", function() {
+    	this_.resize();
+	});
 
 	this.drawMapGeometry = function(map) {
 
@@ -148,16 +176,12 @@ function UsMap(domRoot, onLoad) {
 		var labelFormat = d3.format('$,.02f');
 
 		if (this.legend === undefined) {
-			this.legend = d3.legend.color()
-
-			var rect = svg.node().getBoundingClientRect();
-
-			var width = rect.width - 115;
-			var height = rect.height - 90;
+			this.legend = d3.legend.color();
 
 			svg.append('g')
 				.attr('class', 'colorLegend')
-				.attr('transform', 'translate(' + width + ', ' + height + ')');
+
+			this.positionLegend();
 		}
 		
 		this.legend
@@ -169,6 +193,19 @@ function UsMap(domRoot, onLoad) {
 
 		svg.select('.colorLegend').call(this.legend)
 	};
+
+	this.positionLegend = function() {
+
+		if (this.legend) {
+			var rect = svg.node().getBoundingClientRect();
+
+			var width = rect.width - 115;
+			var height = rect.height - 90;
+
+			svg.select('.colorLegend')
+				.attr('transform', 'translate(' + width + ', ' + height + ')');
+		}
+	}
 
 		// Interpolate between 3 colors.
 	this.buildDivergentScale = function(lowerColor, midColor, upperColor) {
