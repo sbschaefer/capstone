@@ -107,11 +107,15 @@ function UsMap(domRoot, onLoad) {
 			}
 			})
 			.on('click', function(d) {
-				if (this_.zooming !== true) {
-					this_.overCounty(d);
+				if (this_.zooming !== true || 
+					(this_.zooming === true && this_.zoomCounter <= 3 
+						&& (new Date() - this_.zoomTime < 333)))
+				{
+						this_.overCounty(d);
 				}
 
 				this_.zooming = false;
+				this_.zoomCounter = 0;
 			});
 
 		world.append("path")
@@ -139,12 +143,20 @@ function UsMap(domRoot, onLoad) {
 		svg.call(this.tip);
 	};
 
+	this_.zoomCounter = 0;
 	this.addZoom = function() {
 		// https://bl.ocks.org/mbostock/8fadc5ac9c2a9e7c5ba2
 
 		var zoom = d3.behavior.zoom()
 			.scaleExtent([1, 10])
 			.on("zoom", function() {
+				if (this_.zoomCounter == 0) {
+					this_.zoomTime = new Date();
+				}
+
+				this_.zoomCounter++;
+
+
 				this_.zooming = d3.event.sourceEvent != null && d3.event.sourceEvent.type === 'mousemove';
 
 				this_.zoomTranslate = d3.event.translate;
