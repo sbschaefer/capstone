@@ -38,9 +38,10 @@ BarChart CSS
 http://bl.ocks.org/Caged/6476579
 https://bl.ocks.org/mbostock/3885304
 */
-.bar {
+/*.bar {
 	fill: steelblue;
 }
+*/
 
 .bar:hover {
 	fill: brown;
@@ -67,7 +68,6 @@ https://bl.ocks.org/mbostock/3885304
 	padding: 12px;
 	background: rgba(0, 0, 0, 0.8);
 	color: #fff;
-	border-radius: 2px;
 }
 
 /* Creates a small triangle extender for the tooltip */
@@ -146,7 +146,7 @@ body {
 #costChart .x.axis {
 	font-family: Flaticon;
 	font-size: larger;
-	fill: grey;
+	/*fill: grey;*/
 	cursor: default;
 }
 

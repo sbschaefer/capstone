@@ -57,6 +57,8 @@ function barchart(parentNode) {
 
 	svg.call(this.tip);
 
+	var colors = d3.scale.category10();
+
 	this.update = function(model, dataRow) {
 
 		var columns = ['housing', 'food', 'childcare', 'medical', 'transportation', 'other', 'taxes']
@@ -85,6 +87,8 @@ function barchart(parentNode) {
 						.attr("class", "x axis")
 						.attr("transform", "translate(0," + height + ")")
 					.call(xAxis);
+
+			d3.selectAll('.x.axis > .tick > text').attr("fill", function(d, i) {return colors(i);})
 			
 			this.xAxisRendered = true;
 		}
@@ -104,6 +108,7 @@ function barchart(parentNode) {
 
 		bars.enter().append("rect")
 			.attr("class", "bar")
+			.attr("fill", function(d, i) {return colors(i);})
 			.on('mouseover', this.tip.show)
 			.on('mouseout', this.tip.hide);
 
