@@ -115,6 +115,8 @@ https://bl.ocks.org/mbostock/3885304
 body {
 	margin: 0px;
 	overflow: hidden;
+	font-family: Arial;
+	font-size: 16px;
 }
 
 #dataContainer {
