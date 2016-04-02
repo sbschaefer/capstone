@@ -44,7 +44,7 @@ https://bl.ocks.org/mbostock/3885304
 */
 
 .bar:hover {
-	fill: brown;
+	fill: rgba(0,0,0,0.8);
 }
 
 .axis {

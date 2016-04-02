@@ -55,7 +55,7 @@ function barchart(parentNode) {
 		.attr('class', 'bc-d3-tip')
 		.offset([-10, 0])
 		.html(function(d) {
-				return "<span style='color:red'>$" + (d.value).toFixed(2) + "</span>";
+				return "<span style='color:white'>$" + (d.value).toFixed(2) + "</span>";
 		});
 
 	svg.call(this.tip);
