@@ -107,9 +107,14 @@ function UsMap(domRoot, onLoad) {
 			}
 			})
 			.on('click', function(d) {
+				var delta = new Date() - this_.zoomTime;
+
+				console.log(this_.zoomCounter + ", " + delta);
+
+
 				if (this_.zooming !== true || 
 					(this_.zooming === true && this_.zoomCounter <= 3 
-						&& (new Date() - this_.zoomTime < 333)))
+						&& (delta < 333)))
 				{
 						this_.overCounty(d);
 				}
@@ -143,7 +148,7 @@ function UsMap(domRoot, onLoad) {
 		svg.call(this.tip);
 	};
 
-	this_.zoomCounter = 0;
+	this_.zoomCounter = -1;
 	this.addZoom = function() {
 		// https://bl.ocks.org/mbostock/8fadc5ac9c2a9e7c5ba2
 
