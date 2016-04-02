@@ -74,7 +74,7 @@ https://bl.ocks.org/mbostock/3885304
 .bc-d3-tip:after {
 	box-sizing: border-box;
 	display: inline;
-	font-size: 10px;
+	font-size: 9px;
 	width: 100%;
 	line-height: 1;
 	color: rgba(0, 0, 0, 0.8);
@@ -85,7 +85,7 @@ https://bl.ocks.org/mbostock/3885304
 
 /* Style northward tooltips differently */
 .bc-d3-tip.n:after {
-	margin: -1px 0 0 0;
+	margin: -2px 0 0 0;
 	top: 100%;
 	left: 0;
 }

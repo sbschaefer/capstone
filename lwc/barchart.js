@@ -24,6 +24,9 @@ function barchart(parentNode) {
 		'childcare': '\uf105'
 	};
 
+	var xAxisLabels = ['Housing', 'Food', 'Childcare', 'Medical',
+		'Transportation', 'Miscellaneous', 'Taxes'];
+
 	var xAxis = d3.svg.axis()
 		.scale(x)
 		.orient("bottom")
@@ -88,7 +91,13 @@ function barchart(parentNode) {
 						.attr("transform", "translate(0," + height + ")")
 					.call(xAxis);
 
-			d3.selectAll('.x.axis > .tick > text').attr("fill", function(d, i) {return colors(i);})
+			d3.selectAll('.x.axis > .tick > text')
+				.attr("fill", function(d, i) {return colors(i);})
+				.append("svg:title")
+					.text(function(d,i) {
+						//var title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+						return xAxisLabels[i];
+					});
 			
 			this.xAxisRendered = true;
 		}
