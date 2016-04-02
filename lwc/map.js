@@ -194,9 +194,9 @@ function UsMap(domRoot, onLoad) {
 			.range(percentiles);
 
 		var colorScale = this.buildDivergentScale(
-			d3.rgb(0, 0, 217),
-			d3.rgb(188, 188, 188),
-			d3.rgb(186, 0, 0)
+			d3.rgb(49,54,149),
+			d3.rgb(255,255,191),
+			d3.rgb(165,0,38)
 		);
 
 		d3.selectAll(".counties > path").attr('fill', function(d) {
@@ -242,6 +242,7 @@ function UsMap(domRoot, onLoad) {
 		
 		this.legend
 			.scale(legendColorScale)
+			.ascending(true)
 			.labels(legendDomain.map(function(d) {
 				// d3.legend's labelFormat not working
 				return labelFormat(d);
