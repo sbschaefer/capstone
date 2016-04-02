@@ -194,9 +194,9 @@ function UsMap(domRoot, onLoad) {
 			.range(percentiles);
 
 		var colorScale = this.buildDivergentScale(
-			d3.rgb(0, 0, 217),
+			d3.rgb(0, 0, 227),
 			d3.rgb(255,255,191),
-			d3.rgb(186, 0, 0)
+			d3.rgb(203, 0, 0)
 		);
 
 		d3.selectAll(".counties > path").attr('fill', function(d) {
