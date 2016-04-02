@@ -23,11 +23,6 @@
 	stroke-linejoin: round;
 }
 
-.counties > path:hover {
-	stroke-width: 1;
-	stroke: black;
-}
-
 body, html {
 	height: 100%
 }

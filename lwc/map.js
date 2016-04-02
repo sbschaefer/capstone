@@ -90,21 +90,31 @@ function UsMap(domRoot, onLoad) {
 		var path = d3.geo.path()
 			.projection(projection);
 
-		world.append("g")
+		var counties = world.append("g")
 			.attr("class", "counties")
-		.selectAll("path")
+
+		var highlightNode;
+
+		counties.selectAll("path")
 			.data(topojson.feature(map, map.objects.counties).features)
 		.enter().append("path")
 			.attr("d", path)
 			.on('mouseover', function(d) {
-			if (this_.tip) {
-				this_.tip.show(d);
-			}
+				if (this_.tip) {
+					this_.tip.show(d);
+				}
+
+				// Adapted from: http://colorbrewer2.org/#
+				highlightNode = $(this).clone()
+					.css({"pointer-events":"none","stroke":"#000","stroke-width":"2"})
+					.appendTo(world.node());
 			})
 			.on('mouseout', function(d) {
-			if (this_.tip) {
-				this_.tip.hide(d);
-			}
+				if (this_.tip) {
+					this_.tip.hide(d);
+				}
+
+				highlightNode.remove();
 			})
 			.on('click', function(d) {
 				var delta = new Date() - this_.zoomTime;
@@ -127,7 +137,6 @@ function UsMap(domRoot, onLoad) {
 			.datum(topojson.mesh(map, map.objects.states, function(a, b) { return a !== b; }))
 			.attr("class", "states")
 			.attr("d", path);
-
 
 		this_.worldRect = world.node().getBoundingClientRect();
 
