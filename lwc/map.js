@@ -162,7 +162,7 @@ function UsMap(domRoot, onLoad) {
 		// https://bl.ocks.org/mbostock/8fadc5ac9c2a9e7c5ba2
 
 		var zoom = d3.behavior.zoom()
-			.scaleExtent([1, 10])
+			.scaleExtent([.25, 30])
 			.on("zoom", function() {
 				if (this_.zoomCounter == 0) {
 					this_.zoomTime = new Date();
