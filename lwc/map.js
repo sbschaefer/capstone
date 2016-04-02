@@ -195,7 +195,7 @@ function UsMap(domRoot, onLoad) {
 
 		var colorScale = this.buildDivergentScale(
 			d3.rgb(0, 0, 217),
-			d3.rgb(188, 188, 188),
+			d3.rgb(255,255,191),
 			d3.rgb(186, 0, 0)
 		);
 
@@ -242,7 +242,6 @@ function UsMap(domRoot, onLoad) {
 		
 		this.legend
 			.scale(legendColorScale)
-			.ascending(true)
 			.labels(legendDomain.map(function(d) {
 				// d3.legend's labelFormat not working
 				return labelFormat(d);
