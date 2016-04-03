@@ -23,11 +23,6 @@
 	stroke-linejoin: round;
 }
 
-.counties > path:hover {
-	stroke-width: 1;
-	stroke: black;
-}
-
 body, html {
 	height: 100%
 }
@@ -38,12 +33,13 @@ BarChart CSS
 http://bl.ocks.org/Caged/6476579
 https://bl.ocks.org/mbostock/3885304
 */
-.bar {
+/*.bar {
 	fill: steelblue;
 }
+*/
 
 .bar:hover {
-	fill: brown;
+	fill: rgba(0,0,0,0.8);
 }
 
 .axis {
@@ -67,14 +63,13 @@ https://bl.ocks.org/mbostock/3885304
 	padding: 12px;
 	background: rgba(0, 0, 0, 0.8);
 	color: #fff;
-	border-radius: 2px;
 }
 
 /* Creates a small triangle extender for the tooltip */
 .bc-d3-tip:after {
 	box-sizing: border-box;
 	display: inline;
-	font-size: 10px;
+	font-size: 9px;
 	width: 100%;
 	line-height: 1;
 	color: rgba(0, 0, 0, 0.8);
@@ -85,7 +80,7 @@ https://bl.ocks.org/mbostock/3885304
 
 /* Style northward tooltips differently */
 .bc-d3-tip.n:after {
-	margin: -1px 0 0 0;
+	margin: -2px 0 0 0;
 	top: 100%;
 	left: 0;
 }
@@ -120,6 +115,8 @@ https://bl.ocks.org/mbostock/3885304
 body {
 	margin: 0px;
 	overflow: hidden;
+	font-family: Arial;
+	font-size: 16px;
 }
 
 #dataContainer {
@@ -146,7 +143,7 @@ body {
 #costChart .x.axis {
 	font-family: Flaticon;
 	font-size: larger;
-	fill: grey;
+	/*fill: grey;*/
 	cursor: default;
 }
 

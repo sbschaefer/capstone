@@ -24,6 +24,9 @@ function barchart(parentNode) {
 		'childcare': '\uf105'
 	};
 
+	var xAxisLabels = ['Housing', 'Food', 'Childcare', 'Medical',
+		'Transportation', 'Miscellaneous', 'Taxes'];
+
 	var xAxis = d3.svg.axis()
 		.scale(x)
 		.orient("bottom")
@@ -52,10 +55,12 @@ function barchart(parentNode) {
 		.attr('class', 'bc-d3-tip')
 		.offset([-10, 0])
 		.html(function(d) {
-				return "<span style='color:red'>$" + (d.value).toFixed(2) + "</span>";
+				return "<span style='color:white'>$" + (d.value).toFixed(2) + "</span>";
 		});
 
 	svg.call(this.tip);
+
+	var colors = d3.scale.category10();
 
 	this.update = function(model, dataRow) {
 
@@ -85,6 +90,14 @@ function barchart(parentNode) {
 						.attr("class", "x axis")
 						.attr("transform", "translate(0," + height + ")")
 					.call(xAxis);
+
+			d3.selectAll('.x.axis > .tick > text')
+				.attr("fill", function(d, i) {return colors(i);})
+				.append("svg:title")
+					.text(function(d,i) {
+						//var title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+						return xAxisLabels[i];
+					});
 			
 			this.xAxisRendered = true;
 		}
@@ -104,6 +117,7 @@ function barchart(parentNode) {
 
 		bars.enter().append("rect")
 			.attr("class", "bar")
+			.attr("fill", function(d, i) {return colors(i);})
 			.on('mouseover', this.tip.show)
 			.on('mouseout', this.tip.hide);
 

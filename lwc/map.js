@@ -90,35 +90,53 @@ function UsMap(domRoot, onLoad) {
 		var path = d3.geo.path()
 			.projection(projection);
 
-		world.append("g")
+		var counties = world.append("g")
 			.attr("class", "counties")
-		.selectAll("path")
+
+		var highlightNode;
+
+		counties.selectAll("path")
 			.data(topojson.feature(map, map.objects.counties).features)
 		.enter().append("path")
 			.attr("d", path)
 			.on('mouseover', function(d) {
-			if (this_.tip) {
-				this_.tip.show(d);
-			}
+				if (this_.tip) {
+					this_.tip.show(d);
+				}
+
+				// Adapted from: http://colorbrewer2.org/#
+				highlightNode = $(this).clone()
+					.css({"pointer-events":"none","stroke":"#000","stroke-width":"2"})
+					.appendTo(world.node());
 			})
 			.on('mouseout', function(d) {
-			if (this_.tip) {
-				this_.tip.hide(d);
-			}
+				if (this_.tip) {
+					this_.tip.hide(d);
+				}
+
+				highlightNode.remove();
 			})
 			.on('click', function(d) {
-				if (this_.zooming !== true) {
-					this_.overCounty(d);
+				var delta = new Date() - this_.zoomTime;
+
+				console.log(this_.zoomCounter + ", " + delta);
+
+
+				if (this_.zooming !== true || 
+					(this_.zooming === true && this_.zoomCounter <= 3 
+						&& (delta < 333)))
+				{
+						this_.overCounty(d);
 				}
 
 				this_.zooming = false;
+				this_.zoomCounter = 0;
 			});
 
 		world.append("path")
 			.datum(topojson.mesh(map, map.objects.states, function(a, b) { return a !== b; }))
 			.attr("class", "states")
 			.attr("d", path);
-
 
 		this_.worldRect = world.node().getBoundingClientRect();
 
@@ -139,12 +157,20 @@ function UsMap(domRoot, onLoad) {
 		svg.call(this.tip);
 	};
 
+	this_.zoomCounter = -1;
 	this.addZoom = function() {
 		// https://bl.ocks.org/mbostock/8fadc5ac9c2a9e7c5ba2
 
 		var zoom = d3.behavior.zoom()
-			.scaleExtent([1, 10])
+			.scaleExtent([.25, 30])
 			.on("zoom", function() {
+				if (this_.zoomCounter == 0) {
+					this_.zoomTime = new Date();
+				}
+
+				this_.zoomCounter++;
+
+
 				this_.zooming = d3.event.sourceEvent != null && d3.event.sourceEvent.type === 'mousemove';
 
 				this_.zoomTranslate = d3.event.translate;
@@ -177,9 +203,9 @@ function UsMap(domRoot, onLoad) {
 			.range(percentiles);
 
 		var colorScale = this.buildDivergentScale(
-			d3.rgb(0, 0, 217),
-			d3.rgb(188, 188, 188),
-			d3.rgb(186, 0, 0)
+			d3.rgb(0, 0, 227),
+			d3.rgb(255,255,191),
+			d3.rgb(203, 0, 0)
 		);
 
 		d3.selectAll(".counties > path").attr('fill', function(d) {
