@@ -9,6 +9,9 @@
  
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css"> 
     <link rel="stylesheet" type="text/css" href="stylesheets/capstone.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
  
     <title>Capstone</title> 
   </head> 
@@ -19,7 +22,7 @@
     <!-- HEADER --> 
     <div id="header_wrap" class="outer"> 
         <header class="inner"> 
-          <h1 id="project_title">Income Inequality: "So what?"</h1> 
+          <h1 align="center" id="project_title">Income Inequality: "So what?"</h1> 
           <h2 id="project_tagline"></h2> 
         </header> 
     </div> 
@@ -28,6 +31,25 @@
     <div id="main_content_wrap" class="outer"> 
       <section id="main_content" class="inner"> 
 
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Income Inequality: "So what?"</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li class="active"></li>
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sections <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#background">Visualize Income Inequality</a></li>
+            <li><a href="#exploring-policy-proposals">Explore Policy Proposals</a></li>
+            <li><a href="#living-wage">Define a Living Wage</a></li>
+            <li><a href="#interactive-lwc-exploration">Interactive Living Wage Calculator</a></li>
+            <li><a href="#comparing-models">Compare LW Models</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
 
 <h2> 
 <a id="background" class="anchor" href="#background" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Background
@@ -39,7 +61,7 @@
 <p>We often hear in the media that there is an ever-growing gap between the wealthy and the poor, but what does that look like and where do you fit? If we look at the evolution of mean household income over the last 50 years, we start to see a significant divide between the top 20% percent of Americans, with respect to the remaining 80%.</p>
 
 
-<p>For example, let's take a look at Doug Short's representation of mean household income evolution over the past half-century. Start by considering your current household income and identifying approximately where that places you in the chart today. Is that where you'd expect to fall in the household income spectrum for Americans today? Then, observe the spread between each grouping of Americans and how that spread has become more and more pronounced over time. Why do you think this might have been happening?</p>
+<p>For example, let's take a look at a representation of mean household income evolution over the past half-century. Start by considering your current household income and identifying approximately where that places you in the chart today. Is that where you'd expect to fall in the household income spectrum for Americans today? Then, observe the spread between each grouping of Americans and how that spread has become more and more pronounced over time. Why do you think this might have been happening?</p>
 
 
 <div> 
@@ -82,7 +104,10 @@
 <p> 
 <a href="https://www.healthcare.gov/glossary/federal-poverty-level-FPL/">Healthcare.gov lists federal poverty level</a> at $20,160 for a family of 3. In 2014, <a href="https://www.census.gov/hhes/www/poverty/about/overview/">14.8% or 46.7 million people</a> were in poverty. Instead of focusing on how much less people near poverty levels make relative to some other group, we want to focus on what it takes to move everyone out of poverty. It is more important to focus on what will lead to everyone earning a living wage. Perhaps the income gap will be reduced, perhaps not. 
 </p> 
- 
+
+<h2> 
+<a id="exploring-policy-proposals" class="anchor" href="#exploring-policy-proposals" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exploring Policy Proposals
+</h2>
 
 <h4> 
 <a id="universal-income" class="anchor" href="#universal-income" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Universal Income
