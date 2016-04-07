@@ -187,59 +187,8 @@
 
 		rateById = d3.map();
 		countyByFips = d3.map();
-		salaryById = d3.map();
-		percentUnderLivingWageById = d3.map();
 
 		currentFips = null;
-
-		salary_columns = ['10000', '15000', '20000', '25000', '30000', '35000', '40000', '45000', '50000', '60000', '75000', '100000', '125000', '150000', '200000', '200000+'];
-
-		salary_buckets = salary_columns.slice(0, salary_columns.length - 1).map(function(s) {
-			return parseInt(s);
-		});
-
-		var percentUnderLivingWage = function(fips) {
-			if (percentUnderLivingWageById.has(fips)) {
-				return percentUnderLivingWageById.get(fips);
-			}else {
-				var sb = salary_buckets;
-
-				var lw = selectedData.get(fips)[selectedModel.total];
-				var d = salaryById.get(fips);
-
-				var peopleBelowLW = 0;
-				var totalPeople = 0;
-				var lastBucketIndexBelow = 0;
-
-				for (var i = 0; i < salary_columns.length; i++) {
-					var peopleInBucket = +d[salary_columns[i]];
-					if (lw > salary_buckets[i]) {
-						peopleBelowLW += peopleInBucket;
-						lastBucketIndexBelow = i;
-					}
-
-					totalPeople += peopleInBucket;
-				}
-
-				var percentBelow = 1;
-
-				if (lastBucketIndexBelow < salary_buckets.length) {
-
-					// Interpolate between lastBucketIndexBelow and lastBucketIndexBelow + 1
-					// to approximate how many people are below the living wage.
-					var lowerSalary = salary_buckets[lastBucketIndexBelow];
-					var upperSalary = salary_buckets[lastBucketIndexBelow + 1];
-					var percentOfBucket = (lw - lowerSalary) / (upperSalary - lowerSalary);
-
-					peopleBelowLW += +d[salary_columns[lastBucketIndexBelow + 1]] * percentOfBucket;
-
-					percentBelow = peopleBelowLW / totalPeople;
-				}
-
-				percentUnderLivingWageById.set(fips, percentBelow * 100);
-				return percentBelow * 100;
-			}
-		}
 
 		selectedFamily = document.getElementById('familySelect').value;
 		selectedModel = models[document.getElementById('modelSelect').value];
@@ -345,10 +294,6 @@
 					'name': d['name']
 				});
 
-			}).defer(d3.csv, "data/IncomeAndPop.csv", function(d) {
-
-				var fips = normalize_fips(d['fips'])
-				salaryById.set(fips, d);
 			})
 
 		lwcMap = new UsMap(document.getElementById('lwcContainer'), function() {
@@ -381,7 +326,7 @@
 			if (selectedData.has(d.id)) {
 				return tip +
 					"<span>Living Wage: " + getLWForFips(d.id) + '</span><br />' +
-					'<span>Under LW: ~' + (percentUnderLivingWage(d.id)).toFixed(2) + '%</span>';
+					'<span>Under LW: ~' + '%</span>';
 			} else {
 				return tip + "Apologies, Missing Data";
 			}
