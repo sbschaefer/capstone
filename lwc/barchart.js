@@ -1,10 +1,10 @@
 
 // Adapted From: https://bl.ocks.org/mbostock/3885304
-function barchart(parentNode) {
+function barchart(parentNode, userHeight) {
 
 	var margin = {top: 20, right: 20, bottom: 30, left: 50},
 			width = 300 - margin.left - margin.right,
-			height = 500 - margin.top - margin.bottom;
+			height = ((userHeight !== undefined) ? userHeight : 500) - margin.top - margin.bottom;
 
 	var x = d3.scale.ordinal()
 			.rangeRoundBands([0, width], .1);

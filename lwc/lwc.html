@@ -83,23 +83,8 @@
 				</select>
 			</div>
 
-			<div id="mainDataArea">
-				<div id="barchartContainer" class="hidden">
-					<div id="countyNameContainer">
-						<div id="countyName">&nbsp;</div>
-						<div id="chartName">Breakdown of <span id="chartNameLW"></span></div>
-					</div>
-
-					<div id="costChart"></div>
-				</div>
-
-				<div id="initialBarchartHolder">
-					<span>Click on a county to see a cost breakdown</span>
-				</div>
-			</div>
-
-			<div id="diffDataArea" class="hidden">
-				<div id="compareToDiv">Compare to second model:</div>
+			<div id="diffSelects" class="hidden">
+				<div id="compareToDiv" style="color: grey">vs</div>
 				<div id="diffModelSelectArea" style="margin-bottom: 10px;">
 
 					<img class="fakeButton disabledButton" id="mainSwitch" src="minus.png"></img>
@@ -107,24 +92,44 @@
 				<div id="diffFamilySelectArea" style="margin-bottom: 20px;">
 
 				</div>
+			</div>
 
-				<div class="tabs tabs-style-linebox">
-					<nav>
-						<ul>
-							<li><a href='#tab1Content'><span>Diff</span></a></li>
-							<li><a href='#tab2Content'><span id="firstModelTab">First</span></a></li>
-							<li><a href='#tab3Content'><span id="secondModelTab">Second</span></a></li>
-						</ul>
-					</nav>
-				
-					
-					<div id="tab1Content"></div>
+			<div id="countyNameContainer">
+				<div id="countyName">&nbsp;</div>
+				<div id="chartName"><span id="chartNameLW"></span></div>
+			</div>
 
-					<div id="tab2Content"></div>
-					
-					<div id="tab3Content"></div>
+			<div id="mainDataArea">
+				<div id="barchartContainer" class="hidden">
+					<div id="costChart"></div>
 				</div>
+			</div>
 
+			<div id="diffDataArea" class="hidden" style="margin-top: 20px;">
+				<div id="diffBarchartContainer" class="hidden">
+
+					<div class="tabs tabs-style-linebox">
+						<nav>
+							<ul>
+								<li><a href='#tab1Content'><span>Diff</span></a></li>
+								<li><a href='#tab2Content'><span id="firstModelTab">First</span></a></li>
+								<li><a href='#tab3Content'><span id="secondModelTab">Second</span></a></li>
+							</ul>
+						</nav>
+					
+						
+						<div id="tab1Content"></div>
+
+						<div id="tab2Content"></div>
+						
+						<div id="tab3Content"></div>
+					</div>
+
+				</div>
+			</div>
+
+			<div id="initialBarchartHolder">
+				<span>Click on a county to see a cost breakdown</span>
 			</div>
 
 		</div>
@@ -309,12 +314,63 @@
 
 			lwcMap.recolor(rateById);
 
-			if (diffMode) {
+			if (chartShown) {
+				updateBarcharts(currentFips);
+			}
+		}
 
-			}else{
-				if (currentFips) {
-					mainBarChart.update(selectedModel, selectedData.get(currentFips));
+		var updateBarcharts = function(fips) {
+			var dataRow = selectedData.get(fips);
+			var lwValue = 0;
+
+			if (dataRow) {
+
+				if (diffMode) {
+
+					var secondDataRow = secondSelectedData.get(fips);
+
+					var diffDataRow = {"FIPS": fips}
+					var diffModel = {}
+
+					var allValues = [];
+
+					for (var element in selectedModel) {
+						var first = dataRow[selectedModel[element]];
+						var second = secondDataRow[secondSelectedModel[element]];
+						var diff = first - second;
+
+						diffDataRow[element] = diff;
+						diffModel[element] = element;
+
+						if (element !== "total") {
+							allValues.push(first);
+							allValues.push(second);
+							allValues.push(diff);
+						}
+					}
+
+					var yRange = [d3.min(allValues), d3.max(allValues)];
+
+					console.dir(yRange);
+
+					diffBarChart.update(diffModel, diffDataRow, yRange);
+					firstBarChart.update(selectedModel, dataRow, yRange);
+					secondBarChart.update(secondSelectedModel, secondDataRow, yRange);
+
+					lwValue = lwFormat(diffDataRow['total']);
+
+				}else{
+
+					mainBarChart.update(selectedModel, dataRow);
+					lwValue = getLWForFips(fips);
 				}
+
+				var county = countyByFips.get(fips);
+				var countyText = county.name + ", " + county.state;
+				document.getElementById('countyName').innerHTML = countyText;
+
+				document.getElementById('chartNameLW').innerHTML = lwValue;
+
 			}
 		}
 
@@ -479,53 +535,8 @@
 		lwcMap.overCounty = function(d) {
 			var fips = d.id;
 			currentFips = fips;
-			var dataRow = selectedData.get(fips);
-
-			if (diffMode) {
-
-				var secondDataRow =secondSelectedData.get(fips);
-
-				var diffDataRow = {"FIPS": fips}
-				var diffModel = {}
-
-				var allValues = [];
-
-				for (var element in selectedModel) {
-					var first = dataRow[selectedModel[element]];
-					var second = secondDataRow[secondSelectedModel[element]];
-					var diff = first - second;
-
-					diffDataRow[element] = diff;
-					diffModel[element] = element;
-
-					if (element !== "total") {
-						allValues.push(first);
-						allValues.push(second);
-						allValues.push(diff);
-					}
-				}
-
-				var yRange = [d3.min(allValues), d3.max(allValues)];
-
-				console.dir(yRange);
-
-				diffBarChart.update(diffModel, diffDataRow, yRange);
-				firstBarChart.update(selectedModel, dataRow, yRange);
-				secondBarChart.update(secondSelectedModel, secondDataRow, yRange);
-
-			}else{
-
-				if (dataRow) {
-
-					mainBarChart.update(selectedModel, dataRow);
-
-					var county = countyByFips.get(fips);
-					var countyText = county.name + ", " + county.state;
-					document.getElementById('countyName').innerHTML = countyText;
-
-					document.getElementById('chartNameLW').innerHTML = getLWForFips(fips);
-				}
-			}
+			
+			updateBarcharts(fips);
 
 			if (!chartShown) {
 				chartShown = true;
@@ -534,6 +545,7 @@
 				ibhDiv.parentElement.removeChild(ibhDiv);
 
 				document.getElementById('barchartContainer').className = '';
+				document.getElementById('diffBarchartContainer').className = '';
 			}
 		}
 
@@ -564,6 +576,7 @@
 			$('#diffModelSelect').attr('disabled', false).selectric('refresh');
 			$('#diffFamilySelect').attr('disabled', false).selectric('refresh');
 			$('#diffDataArea').removeClass('hidden')
+			$('#diffSelects').removeClass('hidden');
 
 			$('#mainDataArea').addClass('hidden')
 
@@ -584,6 +597,7 @@
 			diffMode = false;
 
 			$('#diffDataArea').addClass('hidden')
+			$('#diffSelects').addClass('hidden');
 
 			$('#mainDataArea').removeClass('hidden')
 
@@ -593,9 +607,11 @@
 			updateGraphs();
 		});
 
-		var diffBarChart = new barchart(d3.select('#tab1Content'));
-		var firstBarChart = new barchart(d3.select('#tab2Content'));
-		var secondBarChart = new barchart(d3.select('#tab3Content'));
+		var diffBarchartHeight = 325;
+
+		var diffBarChart = new barchart(d3.select('#tab1Content'), diffBarchartHeight);
+		var firstBarChart = new barchart(d3.select('#tab2Content'), diffBarchartHeight);
+		var secondBarChart = new barchart(d3.select('#tab3Content'), diffBarchartHeight);
 	</script>
 	<script src="tabs.js"></script>
 </body>
