@@ -19,13 +19,13 @@ function barchart(parentNode, userHeight) {
 		'transportation': '\uf108',
 		'housing': '\uf102',
 		'other': '\uf106',
-		'benefits': '\uf014',
+		'benefits': '\uf104',
 		'taxes': '\uf107',
 		'childcare': '\uf105'
 	};
 
 	var xAxisLabels = ['Housing', 'Food', 'Childcare', 'Medical',
-		'Transportation', 'Miscellaneous', 'Taxes'];
+		'Transportation', 'Miscellaneous', 'Benefits', 'Taxes'];
 
 	var xAxis = d3.svg.axis()
 		.scale(x)
@@ -64,7 +64,7 @@ function barchart(parentNode, userHeight) {
 
 	this.update = function(model, dataRow, yDomain) {
 
-		var columns = ['housing', 'food', 'childcare', 'medical', 'transportation', 'other', 'taxes']
+		var columns = ['housing', 'food', 'childcare', 'medical', 'transportation', 'other', 'benefits', 'taxes']
 
 		var data = []
 
@@ -72,9 +72,11 @@ function barchart(parentNode, userHeight) {
 
 		if (dataRow) {
 			columns.map(function(c) {
-				var val = +dataRow[model[c]];
-				data.push({id: c, value: val})
-				vals.push(val);
+				//if (model.hasOwnProperty(c)) {
+					var val = +dataRow[model[c]];
+					data.push({id: c, value: val})
+					vals.push(val);
+				//}
 			});
 		} else {
 			columns.map(function(c) {
@@ -131,8 +133,11 @@ function barchart(parentNode, userHeight) {
 		bars.attr("class", "bar")
 			.attr("x", function(d) { return x(d.id); })
 			.attr("width", x.rangeBand())
-			.attr("y", function(d) { return y(Math.max(0, d.value)); })
-			//.attr("height", function(d) { return height - y(d.value); })
+			.attr("y", function(d) {
+				var v = d.value;
+				var yCoord = y(Math.max(0, d.value))
+				return yCoord; 
+			})
 			.attr("height", function(d) { 
 				return Math.abs(y(d.value) - y(Math.max(dataMin, 0)));
 			})

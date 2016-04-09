@@ -61,9 +61,7 @@
 				<select id="modelSelect" disabled>
 					<option value="mit_lwc">MIT LWC</option>
 					<option value="mids_lwc" selected>MIDS LWC</option>
-					<option value="3x_eitc">3x EITC</option>
-					<option value="basic_income">Basic Income</option>
-					<option value="mids_lwc_alt">MIDS LWC (Alternate)</option>
+
 				</select>
 
 				<img class="fakeButton disabledButton" id="diffSwitch" src="plus.png"></img>
@@ -196,6 +194,7 @@
 				"medical": "Medical",
 				"other": "Other",
 				"taxes": "Taxes",
+				"benefits": "zero",
 				"total": "MIT LWC"
 			},
 
@@ -206,42 +205,11 @@
 				"transportation": "MIDS Transportation",
 				"medical": "MIDS Medical",
 				"other": "Other",
-				"taxes": "MIDS Taxes All",
-				"total": "MIDS LWC"
+				"taxes": "MIDS Taxes",
+				"benefits": "MIDS Benefits",
+				"total": "MIDS LW"
 			},
 
-			"3x_eitc": {
-				"housing": "Housing",
-				"food": "MIDS Food",
-				"childcare": "MIDS ChildCare",
-				"transportation": "MIDS Transportation",
-				"medical": "MIDS Medical",
-				"other": "Other",
-				"taxes": "3x EITC Tax",
-				"total": "3x EITC"
-			},
-
-			"basic_income": {
-				"housing": "Housing",
-				"food": "MIDS Food",
-				"childcare": "MIDS ChildCare",
-				"transportation": "MIDS Transportation",
-				"medical": "MIDS Medical",
-				"other": "Other",
-				"taxes": "Basic Income Tax",
-				"total": "Basic Income"
-			},
-
-			"mids_lwc_alt": {
-				"housing": "Housing",
-				"food": "MIDS Food",
-				"childcare": "MIDS ChildCare",
-				"transportation": "MIDS Transportation",
-				"medical": "MIDS Medical",
-				"other": "Other",
-				"taxes": "MIDS Taxes Universal",
-				"total": "MIDS LWC 2"
-			}
 		}
 
 		family_data = {}
@@ -290,6 +258,7 @@
 
 			var fips = normalize_fips(d['FIPS'])
 			processModelRow(d);
+			d['zero'] = 0;
 
 			selectedData.set(fips, d);
 			rateById.set(fips, d[selectedModel.total]);
@@ -321,6 +290,8 @@
 				updateBarcharts(currentFips);
 			}
 		}
+
+		var lwFormat = d3.format("$,.02f");
 
 		var updateBarcharts = function(fips) {
 			var dataRow = selectedData.get(fips);
@@ -419,6 +390,7 @@
 
 					var fips = normalize_fips(d['FIPS'])
 					processModelRow(d);
+					d['zero'] = 0;
 
 					secondSelectedData.set(fips, d);
 
@@ -478,8 +450,6 @@
 				enableBoxes();
 			});
 		});
-
-		var lwFormat = d3.format("$,.02");
 
 		getLWForFips = function(fips) {
 			var dataRow = selectedData.get(fips);
