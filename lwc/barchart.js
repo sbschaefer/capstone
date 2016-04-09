@@ -1,10 +1,10 @@
 
 // Adapted From: https://bl.ocks.org/mbostock/3885304
-function barchart(parentNode) {
+function barchart(parentNode, userHeight) {
 
 	var margin = {top: 20, right: 20, bottom: 30, left: 50},
 			width = 300 - margin.left - margin.right,
-			height = 500 - margin.top - margin.bottom;
+			height = ((userHeight !== undefined) ? userHeight : 500) - margin.top - margin.bottom;
 
 	var x = d3.scale.ordinal()
 			.rangeRoundBands([0, width], .1);
@@ -62,7 +62,7 @@ function barchart(parentNode) {
 
 	var colors = d3.scale.category10();
 
-	this.update = function(model, dataRow) {
+	this.update = function(model, dataRow, yDomain) {
 
 		var columns = ['housing', 'food', 'childcare', 'medical', 'transportation', 'other', 'taxes']
 
@@ -91,7 +91,7 @@ function barchart(parentNode) {
 						.attr("transform", "translate(0," + height + ")")
 					.call(xAxis);
 
-			d3.selectAll('.x.axis > .tick > text')
+			svg.selectAll('.x.axis > .tick > text')
 				.attr("fill", function(d, i) {return colors(i);})
 				.append("svg:title")
 					.text(function(d,i) {
@@ -102,8 +102,15 @@ function barchart(parentNode) {
 			this.xAxisRendered = true;
 		}
 
-		var dataMin = d3.min(vals);
-		var dataMax = d3.max(vals);
+		if (yDomain) {
+			var dataMin = yDomain[0];
+			var dataMax = yDomain[1];
+		} else {
+
+			var dataMin = d3.min(vals);
+			var dataMax = d3.max(vals);
+
+		}
 
 		//Rescale y-axis
 		if (dataRow) {
@@ -111,7 +118,7 @@ function barchart(parentNode) {
 
 			svg.select('.y.axis')
 					.call(yAxis);
-		}
+		}		
 
 		var bars = svg.selectAll(".bar").data(data);
 

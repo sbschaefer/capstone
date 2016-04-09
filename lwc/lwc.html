@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link rel="stylesheet" href="lwc.css" />
+	<link rel="stylesheet" href="tabs.css" />
 	<link rel="stylesheet" href="selectric/selectric.css" />
 
 	<style>
@@ -65,6 +66,7 @@
 					<option value="mids_lwc_alt">MIDS LWC (Alternate)</option>
 				</select>
 
+				<img class="fakeButton disabledButton" id="diffSwitch" src="plus.png"></img>
 			</div>
 
 			<div>
@@ -81,23 +83,74 @@
 				</select>
 			</div>
 
-			<div id="barchartContainer" class="hidden">
-				<div id="countyNameContainer">
-					<div id="countyName">&nbsp;</div>
-					<div id="chartName">Breakdown of <span id="chartNameLW"></span></div>
+			<div id="diffSelects" class="hidden">
+				<div id="compareToDiv" style="color: grey">vs</div>
+				<div id="diffModelSelectArea" style="margin-bottom: 10px;">
+
+					<img class="fakeButton disabledButton" id="mainSwitch" src="minus.png"></img>
+				</div>
+				<div id="diffFamilySelectArea" style="margin-bottom: 20px;">
+
+				</div>
+			</div>
+
+			<div id="countyNameContainer">
+				<div id="countyName">&nbsp;</div>
+				<div id="chartName"><span id="chartNameLW"></span></div>
+			</div>
+
+			<div id="mainDataArea">
+				<div class="initialholder">
+					<span>Click on a county to see a cost breakdown</span>
 				</div>
 
-				<div id="costChart"></div>
+				<div id="barchartContainer" class="hidden">
+					<div id="costChart"></div>
+				</div>
 			</div>
 
-			<div id="initialBarchartHolder">
-				<span>Click on a county to see a cost breakdown</span>
-			</div>
+			<div id="diffDataArea" class="hidden" style="margin-top: 20px;">
+				<div class="initialholder">
+					<span style="height: 400px">Click on a county to see a cost breakdown</span>
+				</div>
 
+				<div id="diffBarchartContainer" class="hidden">
+
+					<div class="tabs tabs-style-linebox">
+						<nav>
+							<ul>
+								<li><a href='#tab1Content'><span>Diff</span></a></li>
+								<li><a href='#tab2Content'><span id="firstModelTab">First</span></a></li>
+								<li><a href='#tab3Content'><span id="secondModelTab">Second</span></a></li>
+							</ul>
+						</nav>
+					
+						
+						<div id="tab1Content"></div>
+
+						<div id="tab2Content"></div>
+						
+						<div id="tab3Content"></div>
+					</div>
+
+				</div>
+			</div>
 		</div>
 	</div>
 
 	<script>
+		var diffModelSelect = $('#modelSelect').clone()
+		diffModelSelect.attr('id', 'diffModelSelect')
+
+		var diffFamilySelect = $('#familySelect').clone()
+		diffFamilySelect.attr('id', 'diffFamilySelect')
+
+		
+		diffModelSelect.prependTo($('#diffModelSelectArea'));
+		diffFamilySelect.appendTo($('#diffFamilySelectArea'));
+
+		diffMode = false;
+
 		$(function(){
 		  $('select').selectric();
 		});
@@ -117,11 +170,21 @@
 		function enableBoxes() {
 			$('#familySelect').attr('disabled', false).selectric('refresh');
 			$('#modelSelect').attr('disabled', false).selectric('refresh');
+			$('#diffModelSelect').attr('disabled', false).selectric('refresh');
+			$('#diffFamilySelect').attr('disabled', false).selectric('refresh');
+
+			$('#diffSwitch').removeClass('disabledButton');
+			$('#mainSwitch').removeClass('disabledButton');
 		}
 
 		function disableBoxes() {
 			$('#familySelect').attr('disabled', 'disabled').selectric('refresh');
 			$('#modelSelect').attr('disabled', 'disabled').selectric('refresh');
+			$('#diffModelSelect').attr('disabled', 'disabled').selectric('refresh');
+			$('#diffFamilySelect').attr('disabled', 'disabled').selectric('refresh');
+
+			$('#diffSwitch').addClass('disabledButton');
+			$('#mainSwitch').addClass('disabledButton');
 		}
 
 		models = {
@@ -191,7 +254,13 @@
 		currentFips = null;
 
 		selectedFamily = document.getElementById('familySelect').value;
+		secondSelectedFamily = selectedFamily;
+
 		selectedModel = models[document.getElementById('modelSelect').value];
+		
+		var secondModelSelect = document.getElementById('diffModelSelect');
+		secondModelSelect.value = secondModelSelect.options[0].value;
+		secondSelectedModel = models[secondModelSelect.value];
 		
 		selectedData = d3.map();
 		family_data[selectedFamily] = selectedData;
@@ -233,17 +302,78 @@
 				var fips = e.key;
 				var data = e.value;
 
-				rateById.set(fips, data[selectedModel.total]);
+				if (diffMode) {
+					var firstTotal = data[selectedModel.total]
+					var secondTotal = secondSelectedData.get(fips)[secondSelectedModel.total]
+
+					rateById.set(fips, firstTotal - secondTotal);
+				}else{
+					rateById.set(fips, data[selectedModel.total]);
+				}
 			});
 		}
 
 		var updateGraphs = function() {
-			percentUnderLivingWageById = d3.map();
 
 			lwcMap.recolor(rateById);
 
-			if (currentFips) {
-				mainBarChart.update(selectedModel, selectedData.get(currentFips));
+			if (chartShown) {
+				updateBarcharts(currentFips);
+			}
+		}
+
+		var updateBarcharts = function(fips) {
+			var dataRow = selectedData.get(fips);
+			var lwValue = 0;
+
+			if (dataRow) {
+
+				if (diffMode) {
+
+					var secondDataRow = secondSelectedData.get(fips);
+
+					var diffDataRow = {"FIPS": fips}
+					var diffModel = {}
+
+					var allValues = [];
+
+					for (var element in selectedModel) {
+						var first = dataRow[selectedModel[element]];
+						var second = secondDataRow[secondSelectedModel[element]];
+						var diff = first - second;
+
+						diffDataRow[element] = diff;
+						diffModel[element] = element;
+
+						if (element !== "total") {
+							allValues.push(first);
+							allValues.push(second);
+							allValues.push(diff);
+						}
+					}
+
+					var yRange = [d3.min(allValues), d3.max(allValues)];
+
+					console.dir(yRange);
+
+					diffBarChart.update(diffModel, diffDataRow, yRange);
+					firstBarChart.update(selectedModel, dataRow, yRange);
+					secondBarChart.update(secondSelectedModel, secondDataRow, yRange);
+
+					lwValue = lwFormat(diffDataRow['total']);
+
+				}else{
+
+					mainBarChart.update(selectedModel, dataRow);
+					lwValue = getLWForFips(fips);
+				}
+
+				var county = countyByFips.get(fips);
+				var countyText = county.name + ", " + county.state;
+				document.getElementById('countyName').innerHTML = countyText;
+
+				document.getElementById('chartNameLW').innerHTML = lwValue;
+
 			}
 		}
 
@@ -252,8 +382,6 @@
 			selectedFamily = newFamily;
 			selectedData = family_data[selectedFamily];
 			
-			percentUnderLivingWageById = d3.map();
-
 			if (selectedData) {
 				recalculateRateById();
 				updateGraphs();
@@ -263,10 +391,46 @@
 				selectedData = d3.map();
 				rateById = d3.map();
 
-				queue().defer(d3.csv, familyDataFile(), processFamilyCsv).await(function(error) {
+				queue().defer(d3.csv, familyDataFile(selectedFamily), processFamilyCsv).await(function(error) {
 					updateGraphs();
 
 					family_data[selectedFamily] = selectedData;
+
+					enableBoxes();
+				});
+			}
+		}
+
+		var changeSecondFamily = function(newFamily) {
+
+			secondSelectedFamily = newFamily;
+			secondSelectedData = family_data[secondSelectedFamily];
+			
+			if (secondSelectedData) {
+				recalculateRateById();
+				updateGraphs();
+			} else {
+				disableBoxes();
+
+				secondSelectedData = d3.map();
+				rateById = d3.map();
+
+				queue().defer(d3.csv, familyDataFile(secondSelectedFamily), function(d) {
+
+					var fips = normalize_fips(d['FIPS'])
+					processModelRow(d);
+
+					secondSelectedData.set(fips, d);
+
+					var firstTotal = selectedData.get(fips)[selectedModel.total];
+					var secondTotal = d[secondSelectedModel.total];
+
+					rateById.set(fips, firstTotal - secondTotal);
+
+				}).await(function(error) {
+					updateGraphs();
+
+					family_data[secondSelectedFamily] = secondSelectedData;
 
 					enableBoxes();
 				});
@@ -280,13 +444,20 @@
 			updateGraphs();
 		}
 
-		var familyDataFile = function() {
-			return "data/" + selectedFamily + ".csv";
+		var changeSecondModel = function(newModel) {
+			secondSelectedModel = models[newModel];
+
+			recalculateRateById();
+			updateGraphs();
+		}
+
+		var familyDataFile = function(family) {
+			return "data/" + family + ".csv";
 		}
 		
 		var dataDeferred = 
 			queue()
-			.defer(d3.csv, familyDataFile(), processFamilyCsv)
+			.defer(d3.csv, familyDataFile(selectedFamily), processFamilyCsv)
 			.defer(d3.csv, "data/county_names.csv", function(d) {
 				
 				countyByFips.set(d['code'], {
@@ -318,17 +489,44 @@
 		}
 
 		lwcMap.addTooltipHandler(function(d) {
-			
-			var county = countyByFips.get(d.id);
 
-			var tip = "<span>" + county.name + "</span><br />";
+			var fips = d.id;
 			
-			if (selectedData.has(d.id)) {
-				return tip +
-					"<span>Living Wage: " + getLWForFips(d.id) + '</span><br />' +
-					'<span>Under LW: ~' + '%</span>';
+			var county = countyByFips.get(fips);
+
+			var tip = '<span class="ttCounty">' + county.name + "</span><br />";
+			
+			if (diffMode) {
+
+				if (selectedData.has(fips) && secondSelectedData.has(fips)) {
+
+					var firstLW = selectedData.get(fips)[selectedModel.total];
+					var secondLW = secondSelectedData.get(fips)[secondSelectedModel.total];
+
+					var diffLW = lwFormat(firstLW - secondLW);
+
+					return tip +
+						'<span class="ttDiffLW">Diff of LW: ' + diffLW + '</span><br />' +
+						
+						'<span>First LW: ' + lwFormat(firstLW) + '</span><br />' +
+						'<span class="ttFirst">Under LW: ~' + '%</span><br />' +
+
+						"<span>Second LW: " + lwFormat(secondLW) + '</span><br />' +
+						'<span>Under LW: ~' + '%</span>';
+				} else {
+					return tip + "Apologies, Missing Data";
+				}
+
 			} else {
-				return tip + "Apologies, Missing Data";
+
+				if (selectedData.has(fips)) {
+					return tip +
+						"<span>Living Wage: " + getLWForFips(fips) + '</span><br />' +
+						'<span>Under LW: ~' + '%</span>';
+				} else {
+					return tip + "Apologies, Missing Data";
+				}
+
 			}
 		});
 
@@ -340,26 +538,16 @@
 		lwcMap.overCounty = function(d) {
 			var fips = d.id;
 			currentFips = fips;
-			var dataRow = selectedData.get(fips);
-
-			if (dataRow) {
-
-				mainBarChart.update(selectedModel, dataRow);
-
-				var county = countyByFips.get(fips);
-				var countyText = county.name + ", " + county.state;
-				document.getElementById('countyName').innerHTML = countyText;
-
-				document.getElementById('chartNameLW').innerHTML = getLWForFips(fips);
-			}
+			
+			updateBarcharts(fips);
 
 			if (!chartShown) {
 				chartShown = true;
 
-				var ibhDiv = document.getElementById('initialBarchartHolder');
-				ibhDiv.parentElement.removeChild(ibhDiv);
+				d3.selectAll('.initialholder').remove();
 
 				document.getElementById('barchartContainer').className = '';
+				document.getElementById('diffBarchartContainer').className = '';
 			}
 		}
 
@@ -370,5 +558,62 @@
 		$('#modelSelect').on('change', function(e) {
 			changeModel(e.target.value);
 		});
+
+		$('#diffFamilySelect').on('change', function(e) {
+			changeSecondFamily(e.target.value);
+		});
+
+		$('#diffModelSelect').on('change', function(e) {
+			changeSecondModel(e.target.value);
+		});
+
+		$('#diffSwitch').on('click', function(e) {
+			var thisButton = $(this);
+			if (thisButton.hasClass('disabledButton')) {
+				return;
+			}
+
+			diffMode = true;
+			// disabled attr is cloned, so remove it here
+			$('#diffModelSelect').attr('disabled', false).selectric('refresh');
+			$('#diffFamilySelect').attr('disabled', false).selectric('refresh');
+			$('#diffDataArea').removeClass('hidden')
+			$('#diffSelects').removeClass('hidden');
+
+			$('#mainDataArea').addClass('hidden')
+
+			thisButton.addClass('hidden');
+
+			secondSelectedData = family_data[secondSelectedFamily];
+			recalculateRateById();
+			updateGraphs();
+		});
+
+		$('#mainSwitch').on('click', function(e) {
+
+			var thisButton = $(this);
+			if (thisButton.hasClass('disabledButton')) {
+				return;
+			}
+
+			diffMode = false;
+
+			$('#diffDataArea').addClass('hidden')
+			$('#diffSelects').addClass('hidden');
+
+			$('#mainDataArea').removeClass('hidden')
+
+			$('#diffSwitch').removeClass('hidden');
+
+			recalculateRateById();
+			updateGraphs();
+		});
+
+		var diffBarchartHeight = 325;
+
+		var diffBarChart = new barchart(d3.select('#tab1Content'), diffBarchartHeight);
+		var firstBarChart = new barchart(d3.select('#tab2Content'), diffBarchartHeight);
+		var secondBarChart = new barchart(d3.select('#tab3Content'), diffBarchartHeight);
 	</script>
+	<script src="tabs.js"></script>
 </body>
