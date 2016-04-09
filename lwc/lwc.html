@@ -100,12 +100,20 @@
 			</div>
 
 			<div id="mainDataArea">
+				<div class="initialholder">
+					<span>Click on a county to see a cost breakdown</span>
+				</div>
+
 				<div id="barchartContainer" class="hidden">
 					<div id="costChart"></div>
 				</div>
 			</div>
 
 			<div id="diffDataArea" class="hidden" style="margin-top: 20px;">
+				<div class="initialholder">
+					<span style="height: 400px">Click on a county to see a cost breakdown</span>
+				</div>
+
 				<div id="diffBarchartContainer" class="hidden">
 
 					<div class="tabs tabs-style-linebox">
@@ -127,11 +135,6 @@
 
 				</div>
 			</div>
-
-			<div id="initialBarchartHolder">
-				<span>Click on a county to see a cost breakdown</span>
-			</div>
-
 		</div>
 	</div>
 
@@ -541,8 +544,7 @@
 			if (!chartShown) {
 				chartShown = true;
 
-				var ibhDiv = document.getElementById('initialBarchartHolder');
-				ibhDiv.parentElement.removeChild(ibhDiv);
+				d3.selectAll('.initialholder').remove();
 
 				document.getElementById('barchartContainer').className = '';
 				document.getElementById('diffBarchartContainer').className = '';
