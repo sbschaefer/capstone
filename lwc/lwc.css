@@ -85,6 +85,11 @@ https://bl.ocks.org/mbostock/3885304
 	left: 0;
 }
 
+.selectric-wrapper{
+	display: inline-block;
+	width: 90%;
+}
+
 
 #lwcContainer svg {
 	border-right-style: double;
@@ -140,7 +145,23 @@ body {
 	color: grey;
 }
 
-#costChart .x.axis {
+.fakeButton {
+	width: 16px;
+	cursor: pointer;
+
+	position: relative;
+	top: -5px;
+
+	opacity: 0.8;
+    filter: alpha(opacity=80); /* msie */
+}
+
+.disabledButton {
+	opacity: 0.4;
+    filter: alpha(opacity=40); /* msie */
+}
+
+.x.axis {
 	font-family: Flaticon;
 	font-size: larger;
 	/*fill: grey;*/
@@ -157,4 +178,27 @@ body {
 	display: table-cell;
 	vertical-align: middle;
 	text-align: center
+}
+
+#compareToDiv {
+	font-size: larger;
+	font-weight: bold;
+
+	margin-top: 20px;
+}
+
+.ttCounty {
+	font-weight: bold;
+	margin-bottom: 8px;
+	display: inline-block;
+}
+
+.ttFirst {
+	margin-bottom: 8px;
+	display: inline-block;
+}
+
+.ttDiffLW {
+	margin-bottom: 8px;
+	display: inline-block;
 }
