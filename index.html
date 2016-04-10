@@ -238,7 +238,7 @@
 
 <p>Given the significance of their methodology to our policy exploration, we would highly recommend taking a look through both Stucchio and Scheff's respective modelling approaches:</p>
 
-<span class="caption"><a href="https://www.chrisstucchio.com/blog/2013/basic_income_vs_basic_job.html">Modelling a Basic Income with Python and Monte Carlo Simulation; Stucchio, C.</n></a></span><br>
+<span class="caption"><a href="https://www.chrisstucchio.com/blog/2013/basic_income_vs_basic_job.html">"Modelling a Basic Income with Python and Monte Carlo Simulation"; Stucchio, C.</n></a></span><br>
 
 <span class="caption"><a href="http://dumbmatter.com/2013/11/basic-income-vs-basic-job/comment-page-1/">"Basic income vs. basic jobs"; Scheff, J.</n></a></span>
 <br>
@@ -271,24 +271,49 @@ In order to define and execute our model simulations, we chose to use Python as 
 
 <h2>Defining a Living Wage</h2>
 
+<p>Now, let's explore the notion of a "living wage". As one might expect, we define a living wage to be the wage that is necessary for an individual to live in their current place of residence today. A living wage will differ depending upon the location of an individual, as well as their family composition. For example, an individual in Chicago, Illinois will have a different living wage than a married couple with two dependent children living in Boise, Idaho. But what are the components that make a living wage and what does a living wage look like for you? To begin to answer these questions, we will first look at a Living Wage Calculator that was first developed in 2004 by Dr. Amy K. Glasmeier at the Massachusetts Institute of Technology (MIT).
+
 <h4> 
 <a id="mit-lwc-model" class="anchor" href="#mit-lwc-model" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The MIT Living Wage Model
 </h4>
 
-<p>Cite the MIT background information website and note summary information in order to provide a basic foundation for what is being included in their LWC -- We can potentially note areas for potential improvement here to set the frameowkr for our model later.</p>
+<p>Dr. Glasmeier explained a living wage as follows: 
+  <blockquote cite="http://livingwage.mit.edu/pages/about">
+  "The living wage model is an alternative measure of basic needs. It is a market-based approach that draws upon geographically specific expenditure data related to a family’s likely minimum food, child care, health insurance, housing, transportation, and other basic necessities (e.g. clothing, personal care items, etc.) costs."
+  </blockquote>
+</p>
+
+<p>In order to quantify a living wage into a single value, Dr. Glasmeier used two primary formulas:
+
+  Basic needs budget = Food cost + child care cost + (insurance premiums + health care costs) + housing cost + transportation cost + other necessities cost
+
+  AND
+
+  Living wage = Basic needs budget + (basic needs budget * (taxes))
+</p>
+
+<p>Further detail concerning the composition of each of the formulaic components above are detailed on the MIT Living Wage Calculator website:</p>
+
+<span class="caption"><a href="http://livingwage.mit.edu/pages/about">"Introduction to the living wage model"; Glasmeier, A.</n></a></span>
+<br>
 
 <h4> 
 <a id="mit-lwc-calculator" class="anchor" href="#mit-lwc-calculator" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The MIT Living Wage Calculator
 </h4>
 
-<p>Use this area to describe and provide a link for the MIT LWC website</p>
+<p>The MIT Living Wage Calculator, which allows for county-level selections, shows a total living wage value for family compositions ranging from a single adult to a married couple with up to three dependent children. To explore this tool, which we highly recommend, the calculator can be found at the following link:</p>
+
+<span class="caption"><a href="http://livingwage.mit.edu">"Living Wage Calculator"; Glasmeier, A.</n></a></span>
+<br>
+
+<p>While the MIT model is a wonderful tool with a depth of information for informing users on general cost of living summaries, we felt that there were significant areas for potetial improvement on their model, both in terms of the data sources utilized and the method of data presentations. In the next section, we will identify areas for potential enhancement, culminating in an Interactive Living Wage Model based on our newly-developed model.
 
 <h4> 
 <a id="mids-lwc-model" class="anchor" href="#mids-lwc-model" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The MIDS Living Wage Model
 </h4>
 
 
-<p>For the purposes of our analysis, let's summarize primary components of a living wage as follows:</n>
+<p>For the purposes of our analysis and model enhancements, we will summarize the primary components of a living wage as follows:</n>
 <ul>
   <li>Housing Cost</li>
   <li>Healthcare Cost</li>
