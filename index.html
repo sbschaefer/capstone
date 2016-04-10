@@ -234,14 +234,38 @@
 
 <p>With these values (which will apply to both the UBI and BJG models), we can move into defining the high-level models for the implementation of UBI or BJG proposals.</p>
 
-<p>In order to define and execute our model simulations, we chose to use Python as a means for constructions and model result output. Two VERY IMPORTANT influences in our choice of model construction and Monte Carlo simulations stemmed from Chris Stucchio and Jeremy Scheff. Stucchio put forth the notion of 
+<p>Note that two VERY IMPORTANT influences in our choice of model construction and Monte Carlo simulation stemmed from Chris Stucchio and Jeremy Scheff. Stucchio conjured up this notion of exploration through modeling, while Scheff offered several potential enhancements or corrections to Stucchio's models. While many reacted to Stucchio's methodology assome sort of biased attempt to favor one policy or another, we chose to apprecate his approach as a method for beginning the conversation, so to speak. That is, creating models and simulating potential outcomes can be an incredibly powerful method for exploring the impacts of economic policies. It's one thing to express a qualitative opinion to policy debates, but it's an entirely different thing to actually attempt to place values alongside your opinions. It is with this motivation that we chose to explore and implement our UBI and BJG models through Monte Carlo simulation.</p>
 
+<p>Given the significance of their methodology to our policy exploration, we would highly recommend taking a look through both Stucchio and Scheff's respective modelling approaches:</p>
 
+<span class="caption"><a href="https://www.chrisstucchio.com/blog/2013/basic_income_vs_basic_job.html">Modelling a Basic Income with Python and Monte Carlo Simulation; Stucchio, C.</n></a></span>
+
+<span class="caption"><a href="http://dumbmatter.com/2013/11/basic-income-vs-basic-job/comment-page-1/">"Basic income vs. basic jobs"; Scheff, J.</n></a></span>
+<br>
+
+<h4> 
+<a id="model-execution" class="anchor" href="#model-execution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UBI and BJG Model Results
+</h4>
+
+In order to define and execute our model simulations, we chose to use Python as a means for model construction and result output. Using the high-level model attributes and economic statistics detailed above, our model simulations produced the following result:
 
 <div>
 <img src="images/story/monte_carlo_result.png"></img>
 </div>
 <br>
+
+<p>What do these results tell us?</p>
+
+<p>First off, our result is showing us the simulated cost/benefit of implementing each policy proposal. The X axis shows us the cost/benefit in trillions USD, where a positive number represents a residual cost overall and a negative number reflects a residual benefit. The Y axis represents the number of simulations producing a results of each value. Since Monte Carlo simulations allow us to run thousands of simulations (or more), we are especially interested in how the results are distributed. In reviewing our results, we can see that the results for a Basic Jobs Guarantee are much more spread out that those for Basic Income. This tells us that, according to our model and potential unknowns, results from our BJG model possess a much larger variance in outcome, whereas UBI may be more certain in terms of quantifying the monetary impact overall. Their estimated impacts, though, are actually quite similar. We must emphasize, though, that this is a function of our model. If we were to alter any of our parameters or add/remove specific variables, our results may change a great deal.</p>
+
+<p>So, what should you take away from this? The most important takeaway from this analysis is that any policy debate or public consideration can (and should) be aided by attempts to quantify potential impacts. It is crucial to any debate that you understand as much about any potential impacts (good or bad) as possible. Building a model can be incredibly effective in the learning process and often develops an environment that is much more conducive to open debate and intellectual growth.</p>
+
+<p>For more information about our models and variable choices, visit the following link:</p>
+
+<p>********Paste the Github code for our model in a sharing Gist site********</p>
+
+<p>We highly encourage you to look at our models (as well as Stucchio's and Scheff's) and to consider any potential improvements or enhancements.</p>
+
 
 <a id="living-wage" class="anchor" href="#living-wage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>
 
