@@ -59,9 +59,13 @@
 			<div style="margin-bottom: 10px;">
 	
 				<select id="modelSelect" disabled>
-					<option value="mit_lwc">MIT LWC</option>
-					<option value="mids_lwc" selected>MIDS LWC</option>
-
+					<option value="mit_lwc">MIT Living Wage</option>
+					<option value="mids_lwc" selected>MIDS Living Wage</option>
+					<option value="4xTC">4x Current CTC &amp; EITC</option>
+					<option value="medical">Bernie's Medicaid For All</option>
+					<option value="UBI_12k">Universal Basic Income $12k</option>
+					<option value="safety">Expanded Safety Net</option>
+					<option value="daycare">Free Daycare</option>
 				</select>
 
 				<img class="fakeButton disabledButton" id="diffSwitch" src="plus.png"></img>
@@ -185,6 +189,16 @@
 			$('#mainSwitch').addClass('disabledButton');
 		}
 
+		under_lw_map = {
+			//"mit_lwc" : "",
+			"mids_lwc": "MIDS Below LWC",
+			"4xTC" : "4xTC Below LWC",
+			"medical": "Medical Below LWC",
+			"UBI_12k": "UBI_12k Below LWC",
+			"safety" :"Expanded Safety Net Below LWC",
+			"daycare" : "Daycare Below LWC"
+		}
+
 		models = {
 			"mit_lwc": {
 				"housing": "Housing",
@@ -208,6 +222,61 @@
 				"taxes": "MIDS Taxes",
 				"benefits": "MIDS Benefits",
 				"total": "MIDS LW"
+			},
+			"4xTC": {
+				"housing": "Housing",
+				"food": "MIDS Food",
+				"childcare": "MIDS ChildCare",
+				"transportation": "MIDS Transportation",
+				"medical": "MIDS Medical",
+				"other": "Other",
+				"taxes": "4xTC Taxes",
+				"benefits": "4xTC Benefits",
+				"total": "4xTC LW"
+			},
+			"medical": {
+				"housing": "Housing",
+				"food": "MIDS Food",
+				"childcare": "MIDS ChildCare",
+				"transportation": "MIDS Transportation",
+				"medical": "MIDS Medical",
+				"other": "Other",
+				"taxes": "Medical Tax",
+				"benefits": "Medical Benefits",
+				"total": "Medical LWC"
+			},
+			"UBI_12k": {
+				"housing": "Housing",
+				"food": "MIDS Food",
+				"childcare": "MIDS ChildCare",
+				"transportation": "MIDS Transportation",
+				"medical": "MIDS Medical",
+				"other": "Other",
+				"taxes": "UBI_12k Tax",
+				"benefits": "UBI_12k Benefits",
+				"total": "UBI_12k LWC"
+			},
+			"safety": {
+				"housing": "Housing",
+				"food": "MIDS Food",
+				"childcare": "MIDS ChildCare",
+				"transportation": "MIDS Transportation",
+				"medical": "MIDS Medical",
+				"other": "Other",
+				"taxes": "Expanded Safety Net Tax",
+				"benefits": "Expanded Safety Net Benefits",
+				"total": "Expanded Safety Net LWC"
+			},
+			"daycare": {
+				"housing": "Housing",
+				"food": "MIDS Food",
+				"childcare": "MIDS ChildCare",
+				"transportation": "MIDS Transportation",
+				"medical": "MIDS Medical",
+				"other": "Other",
+				"taxes": "Daycare Tax",
+				"benefits": "Daycare Benefits",
+				"total": "Daycare LWC"
 			},
 
 		}
@@ -458,6 +527,16 @@
 			return lwFormat(lw);
 		}
 
+		var underlwFormat = d3.format("%");
+		getUnderLW = function(data, model_id) {
+			var underLWCColumn = under_lw_map[model_id];
+			if (underLWCColumn) {
+				return underlwFormat(data[underLWCColumn]);
+			}
+
+			return undefined;
+		} 
+
 		lwcMap.addTooltipHandler(function(d) {
 
 			var fips = d.id;
@@ -465,24 +544,35 @@
 			var county = countyByFips.get(fips);
 
 			var tip = '<span class="ttCounty">' + county.name + "</span><br />";
+
+			var firstModel = $('#modelSelect').val();
+
+			var underLW = getUnderLW(selectedData.get(fips), firstModel)
 			
 			if (diffMode) {
+
+				var secondModel = $('#diffModelSelect').val();
 
 				if (selectedData.has(fips) && secondSelectedData.has(fips)) {
 
 					var firstLW = selectedData.get(fips)[selectedModel.total];
 					var secondLW = secondSelectedData.get(fips)[secondSelectedModel.total];
 
+					var diffUnderLW = getUnderLW(secondSelectedData.get(fips), secondModel);
+
 					var diffLW = lwFormat(firstLW - secondLW);
 
-					return tip +
-						'<span class="ttDiffLW">Diff of LW: ' + diffLW + '</span><br />' +
+					tip += '<span class="ttDiffLW">Diff of LW: ' + diffLW + '</span><br />' +
 						
 						'<span>First LW: ' + lwFormat(firstLW) + '</span><br />' +
-						'<span class="ttFirst">Under LW: ~' + '%</span><br />' +
+						'<span class="ttFirst">' + ((underLW !== undefined) ? 'Under LW: ' + underLW  : '&nbsp;') + '</span><br />' +
 
-						"<span>Second LW: " + lwFormat(secondLW) + '</span><br />' +
-						'<span>Under LW: ~' + '%</span>';
+						"<span>Second LW: " + lwFormat(secondLW) + '</span><br />';
+
+						if (diffUnderLW !== undefined)
+							tip += '<span>Under LW: ' + diffUnderLW + '</span>';
+
+					return tip;
 				} else {
 					return tip + "Apologies, Missing Data";
 				}
@@ -490,9 +580,13 @@
 			} else {
 
 				if (selectedData.has(fips)) {
-					return tip +
-						"<span>Living Wage: " + getLWForFips(fips) + '</span><br />' +
-						'<span>Under LW: ~' + '%</span>';
+					tip += "<span>Living Wage: " + getLWForFips(fips) + '</span><br />';
+
+					if (underLW !== undefined) {
+						tip += '<span>Under LW: ' + underLW + '</span>';
+					}
+
+					return tip;
 				} else {
 					return tip + "Apologies, Missing Data";
 				}
