@@ -27,10 +27,6 @@
         </header> 
     </div> 
 
-    <!-- MAIN CONTENT --> 
-    <div id="main_content_wrap" class="outer"> 
-      <section id="main_content" class="inner"> 
-
   <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -43,13 +39,17 @@
             <li><a href="#visualize-income-inequality">Section 1: Visualize Income Inequality</a></li>
             <li><a href="#exploring-policy-proposals">Section 2: Explore Policy Proposals</a></li>
             <li><a href="#living-wage">Section 3: Define a Living Wage</a></li>
-            <li><a href="#interactive-lwc-exploration">Section 4: Interactive Living Wage Calculator</a></li>
+            <li><a href="#lwcIframeBuffer">Section 4: Interactive Living Wage Calculator</a></li>
             <li><a href="#appendix">Section 5: Appendix</a></li>
           </ul>
         </li>
       </ul>
     </div>
   </nav>
+
+<!-- MAIN CONTENT --> 
+<div id="main_content_wrap" class="outer"> 
+  <section id="mission" class="inner"> 
 
 <h2> 
 <a id="ourmission" class="anchor" href="#ourmission" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Our Mission
@@ -59,6 +59,8 @@
 <p>What is income inequality in America and why should it matter to you? Our goal is to help you understand what income inequality looks like and to identify the many components that make up what it takes to live and to thrive in the United States today.</p> 
 
 <p>To do so, we've compiled data and developed visualizations from many different aspects of income inequality in order to establish a storyline of what it looks like today and how you fit into the overall picture. A key component of this picture is the notion of a living wage. To highlight this, we've developed the Interactive Living Wage Calculator which allows you to view today's living wage at a county level, comparing different locations and different versions of a "living wage model". Above all, we hope that you view this tool as an advocate for exploration and education. Income inequality is a serious issue in the United States and it is our hope that this tool will lay the foundation for understanding what you can do to help resolve it for future generations.</p><br>
+
+</section><section id="viz_income_inequality" class="inner"> 
 
 <a id="visualize-income-inequality" class="anchor" href="#visualize-income-inequality" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>
 
@@ -110,6 +112,8 @@
 <p> 
 <a href="https://www.healthcare.gov/glossary/federal-poverty-level-FPL/">Healthcare.gov lists federal poverty level</a> at $20,160 for a family of 3. In 2014, <a href="https://www.census.gov/hhes/www/poverty/about/overview/">14.8% or 46.7 million people</a> were in poverty. Instead of focusing on how much less people near poverty levels make relative to some other group, we want to focus on what it takes to move everyone out of poverty. It is more important to focus on what will lead to everyone earning a living wage. Perhaps the income gap will be reduced, perhaps not. 
 </p><br>
+
+</section><section id="policy_proposals" class="inner">
 
 <a id="exploring-policy-proposals" class="anchor" href="#exploring-policy-proposals" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>
 
@@ -267,6 +271,8 @@ In order to define and execute our model simulations, we chose to use Python as 
 <p>We highly encourage you to look at our models (as well as Stucchio's and Scheff's) and to consider any potential improvements or enhancements.</p><br>
 
 
+</section><section id="living_wage_definition" class="inner">
+
 <a id="living-wage" class="anchor" href="#living-wage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>
 
 <h2>Defining a Living Wage</h2>
@@ -335,22 +341,25 @@ In order to define and execute our model simulations, we chose to use Python as 
 </h4>
 
 <p>We can use this area for a quick reminder of why we wanted to culminate in an interactive tool and what the user can explore, prior to diving in below...</p><br>
- 
+
+</section><section id="lw_calculator" class="inner"> 
+
 <a id="interactive-lwc-exploration" class="anchor" href="#interactive-lwc-exploration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>
 
 <h2>Interactive Living Wage Calculator</h2>
 
-<div>
-<img src="images/story/lwc.PNG"></img>
-</div><br>
+</section>
 
+<div id="lwcIframeBuffer" style="height:50px;"></div>
+<iframe id="lwcIframe" src="lwc/lwc.html"></iframe>
 
-<br>
+</section><section id="appendix_section" class="inner">
 
 <a id="appendix" class="anchor" href="#appendix" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>
 
 <h2>Appendix - Supplemental Visualizations and Resources</h2>
 
+</section>
 
 <h4> 
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors
