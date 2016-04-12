@@ -127,6 +127,8 @@ body {
 #dataContainer {
 	min-width: 325px;
 	margin: 25px;
+	flex-shrink: 0;
+	flex-basis: auto;
 }
 
 #countyNameContainer {
