@@ -322,18 +322,84 @@ In order to define and execute our model simulations, we chose to use Python as 
 </h4>
 
 
-<p>For the purposes of our analysis and model enhancements, we will summarize the primary components of a living wage as follows:</n>
-<ul>
-  <li>Housing Cost</li>
-  <li>Healthcare Cost</li>
-  <li>Food Cost</li>
-  <li>Taxes (including Federal and State taxes)</li>
-  <li>Transportation</li>
-  <li>Other (including cost of basic necessities like clothing, toiletries, and other miscellaneous consumer products)</li>
-</ul>
-</p>
+<p>In considering potential improvements to the MIT Living Wage (LW) model, one primary area of focus was enhancing the depth and quality of the formula components and supporting data. Overall, we find no fault with the underlying model. In fact, we would argue that it gives a realistic, market-based approach toward depitcting what it truly costs to live across the United States today. As such, we chose to retain the basic living wage formula developed by MIT and to focus our efforts on expanding the definitions of those components and improving the level of precision possible within the United States. As a result, we were able to significantly improve the level of detail and cost inclusion, which will only serve to further educate users the enriched exploration capabilities.</p>
 
-<p>**********Include a table similar to that which was used in Presentation 2 showing, for each component, the source of data and level/scale of data between MIT and MIDS models. This will help to highlight our enhancements quickly and clearly for the user*********</p>
+<p>Consider the following comparison between the MIDS model and MIT model, showing the data sources used and the level of granularity obtained for each cost element:</p>
+
+<TABLE>
+   <TR>
+      <TH COLSPAN="5"><H3>Model Comparison: Data Sources and Level of Precision</H3>
+      </TH>
+   </TR>
+   <TR>
+      <TH COLSPAN="1"></TH>
+      <TH COLSPAN="2">MIT Living Wage Model</TH>
+      <TH COLSPAN="2">MIDS Living Wage Model</TH>
+   </TR>
+   <TR>
+      <TH><B>Cost Category:</B></TH>
+      <TH><B>Data Components & Source(s)</B></TH>
+      <TH><B>Level of Precision</B></TH>
+      <TH><B>Data Components & Source(s)</B></TH>
+      <TH><B>Level of Precision</B></TH>
+   </TR>
+   <TR>
+      <TD><B>Food</B></TD>
+      <TD>USDAís low-cost food plan national average as of June 2014</TD>
+      <TD>Regional*</TD>
+      <TD>U.S. Hunger Relief Organization ñ Feeding America</TD>
+      <TD>County-level</TD>
+   </TR>
+   <TR>
+      <TD><B>Child Care</B></TD>
+      <TD>National Association of Child Care Resources and Referral Agencies' estimates as of 2013</TD>
+      <TD>State-level</TD>
+      <TD></TD>
+      <TD>County-level</TD>
+   </TR>
+   <TR>
+      <TD><B>Medical</B></TD>
+      <TD>Healthcare costs from the 2014 Bureau of Labor Statistics Consumer Expenditure Survey (2013 data); Health insurance cost estimates from Health Insurance Component Analytical Tool (MEPSnet/IC) from the Agency of Healthcare Research and Quality, as of 2013.</TD>
+      <TD>Regional*; State-level (respectively)</TD>
+      <TD>Healthcare costs: Center for Medicaid/Medicare and Healthcare Marketplace, Health insurance premiums: Affordable Care Act (ACA)</TD>
+      <TD>County-level</TD>
+   </TR>
+   <TR>
+      <TD><B>Housing</B></TD>
+      <TD>HUD Fair Market Rents (FMR) estimates**, as of 2014</TD>
+      <TD>County and Sub-County levels</TD>
+      <TD>Center for Neighborhood Technology (<b>Housing</b> and Transportation (H+T) Index)</TD>
+      <TD>County-level (census tract available, but not modeled)</TD>
+   </TR>
+   <TR>
+      <TD><B>Transportation</B></TD>
+      <TD>National expenditure from the 2014 Bureau of Labor Statistics Consumer Expenditure Survey (2013 data) by household size</TD>
+      <TD>Regional*</TD>
+      <TD>Center for Neighborhood Technology (Housing and <b>Transportation</b> (H+T) Index)</TD>
+      <TD>County-level</TD>
+   </TR>
+   <TR>
+      <TD><B>Other Necessities</B></TD>
+      <TD>National expenditure from the 2014 Bureau of Labor Statistics Consumer Expenditure Survey (2013 data) by household size</TD>
+      <TD>Regional*</TD>
+      <TD></TD>
+      <TD>County-level</TD>
+   </TR>
+   <TR>
+      <TD><B>Taxes</B></TD>
+      <TD>Federal tax: Tax Policy Center of the Urban Institute/Brookings Institution, 2nd lowest bracket*** (2013); State tax: CCH State Tax Handbook (2011); Payroll tax: Federal Insurance Contributions Act (2013)</TD>
+      <TD>National; State-level (respectively)</TD>
+      <TD>Federal tax; State tax; Additional tax components, including credits (from multiple sources): EITC, FICA/Medicaid, TANF, Section 8, SNAP, Head Start, and Disability</TD>
+      <TD>County-level</TD>
+   </TR>
+</TABLE>
+
+
+<div>
+<span class="caption">*Regional includes East, Midwest, South, and West</span><br>
+<span class="caption">**Estimates include general utility expense and vary depending upon the number of bedrooms in each dwelling</span><br>
+<span class="caption">***The lowest bracket was used if the second lowest bracket was for incomes over $30,000 annually</span><br>
+</div>
 
 
 <h4> 
