@@ -75,7 +75,7 @@
 <div> 
 <img src="images/story/mean-household-income-nominal.png"></img> 
 <span class="caption">Figure 1: Mean Household Income Growth, U.S. Census Bureau</span> 
-</div> 
+</div><br>
 
 
 <p>To summarize the information above, the increase in mean household income for the top 20% of Americans over the past half-century (~$175 million) is greater than the increase experienced by the remaining 80% of Americans combined (~$135 million)! One way to interpret this is that the purchasing power of the top 20% of Americans is increasing at a outlandishly higher rate than the entire lower 80% of Americans.</p>
@@ -84,11 +84,12 @@
 
 <div> 
 <img src="images/story/household-income-growth-percentage.png"></img> 
-<span class="caption">Figure 2: Want to see more data? Check out <a href="http://www.advisorperspectives.com/dshort/updates/Household-Income-Distribution.php">Doug Short's</a> in-depth look at household income</span> 
+<span class="caption">Figure 2: Year-over-Year Precentage Trends in Mean Household Income by Quantile, U.S. Census Bureau</span> 
 </div><br>
 
 <p>NOTE THE ISOLATED SPIKES ABOVE, AS WELL AS THE NOTION OF NOMINAL VERSUS REAL INCOME EXPRESSIONS</p>
 
+<p>Want to see more data? Check out <a href="http://www.advisorperspectives.com/dshort/updates/Household-Income-Distribution.php">Doug Short's</a> in-depth look at trends in household income</p>
 
 <p>In addition to simple household income, marginal income can also be an enlightening depiction of income inequality. This is especially true from the perspective of comparing the availability of government assistance and tax benefits as income levels increase. </p>
 
@@ -221,7 +222,7 @@
 
 <p>If you’d like to the mechanics of Monte Carlo Analysis any further, you might consider perusing any of the following article:</p>
 
-<span class="caption"><a href="http://www.manufacturing.net/article/2012/11/demystifying-monte-carlo">"Demystifying Monte Carlo"; Nicol, A., Manuafacturing.net</a></span><br>
+<span class="caption"><a href="http://www.manufacturing.net/article/2012/11/demystifying-monte-carlo">"Demystifying Monte Carlo"; Nicol, A., Manufacturing.net</a></span><br>
 <br>
 
 <p>Let’s start with exploring potential outcomes for a simple UBI policy. To do so, we can begin by identifying some of the direct costs and benefits of such a program.</p>
@@ -238,7 +239,7 @@
 
 <p>With these values (which will apply to both the UBI and BJG models), we can move into defining the high-level models for the implementation of UBI or BJG proposals.</p>
 
-<p>Note that two VERY IMPORTANT influences in our choice of model construction and Monte Carlo simulation stemmed from analysis conducted by Chris Stucchio and Jeremy Scheff. Stucchio championed the notion of exploration through modeling, while Scheff offered several potential enhancements or corrections to Stucchio's models. While many reacted to Stucchio's methodology assome sort of biased attempt to favor one policy or another, we chose to apprecate his approach as a method for beginning the conversation, so to speak. That is, creating models and simulating potential outcomes can be an incredibly powerful method for exploring the impacts of economic policies. It's one thing to express a qualitative opinion to policy debates, but it's an entirely different thing to actually attempt to place values alongside your opinions. It is with this motivation that we chose to explore and implement our UBI and BJG models through Monte Carlo simulation.</p>
+<p>Note that two VERY IMPORTANT influences in our choice of model construction and Monte Carlo simulation stemmed from analysis conducted by Chris Stucchio and Jeremy Scheff. Stucchio championed the notion of exploration through modeling, while Scheff offered several potential enhancements or modifications to Stucchio's models. While many reacted to Stucchio's methodology as some sort of biased attempt to favor one policy or another, we chose to appreciate his approach as a method for beginning the conversation, so to speak. That is, creating models and simulating potential outcomes can be an incredibly powerful method for exploring the impacts of economic policies. It's one thing to express a qualitative opinion to policy debates, but it's an entirely different thing to actually attempt to place values alongside your opinions. It is with this motivation that we chose to explore and implement our UBI and BJG models through Monte Carlo simulation.</p>
 
 <p>Given the significance of their methodology to our policy exploration, we would highly recommend taking a look through both Stucchio and Scheff's respective modelling approaches:</p>
 
@@ -315,14 +316,14 @@ In order to define and execute our model simulations, we chose to use Python as 
 <span class="caption"><a href="http://livingwage.mit.edu">"Living Wage Calculator"</n></a></span>
 </p>
 
-<p>While the MIT model is a wonderful tool with a depth of information for informing users about general cost of living summaries, we felt that there were significant areas for potetial improvement on their model, both in terms of the data sources utilized and the method of data presentations. In the next section, we will identify areas for potential enhancement, culminating in an Interactive Living Wage Calculator based on our newly-developed model.
+<p>While the MIT model is a wonderful tool with a depth of information for informing users about general cost of living summaries, we felt that there were significant areas for potential improvement on their model, both in terms of the data sources utilized and the method of data presentations. In the next section, we will identify areas for potential enhancement, culminating in an Interactive Living Wage Calculator based on our newly-developed model.
 
 <h4> 
 <a id="mids-lwc-model" class="anchor" href="#mids-lwc-model" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The MIDS Living Wage Model
 </h4>
 
 
-<p>In considering potential improvements to the MIT Living Wage (LW) model, one primary area of focus was enhancing the depth and quality of the formula components and supporting data. Overall, we find no fault with the underlying model. In fact, we would argue that it gives a realistic, market-based approach toward depitcting what it truly costs to live across the United States today. As such, we chose to retain the basic living wage formula developed by MIT and to focus our efforts on expanding the definitions of those components and improving the level of precision possible within the United States. As a result, we were able to significantly improve the level of detail and cost inclusion, which will only serve to further educate users the enriched exploration capabilities.</p>
+<p>In considering potential improvements to the MIT Living Wage (LW) model, one primary area of focus was enhancing the depth and quality of the formula components and supporting data. Overall, we find no fault with the underlying model. In fact, we would argue that it gives a realistic, market-based approach toward depicting what it truly costs to live across the United States today. As such, we chose to retain the basic living wage formula developed by MIT and to focus our efforts on expanding the definitions of those components and improving the level of precision possible within the United States. As a result, we were able to significantly improve the level of detail and cost inclusion, which will only serve to further educate users the enriched exploration capabilities.</p>
 
 <p>Consider the following comparison between the MIDS model and MIT model, showing the data sources used and the level of granularity obtained for each cost element:</p>
 
@@ -417,7 +418,7 @@ In this context, that means focusing on regions that interests a user, or to foc
 
 <p>The calculator allows users to select either one or two models at the same time from our list of pre-defined models (discussed above). If one model is selected, the map will reflect the living wage values for each county in the U.S. and the bar chart will populate with the itemized breakdown of costs that make up each county's living wage value. If two models are selected, the calculator will recalculate value and the map will show the difference between the two models selected. The bar chart will also update to allow users to select a breakdown of the differences by item, or to show one of the two model's full breakdown. 
 
-<p>As you move your cursor across the map, you'll notice tooltips that provide summary information for each individual county (based on the living wage model selected). When looking at a single model, the tooltips include the name of the county, the annual living wage value forthat county, and the percentage of the county's population whose household income is less than the living wage value shown. If you select two models to compare, the tooltips will expand to also include the difference between the two models, as well as the total living wage value for the second model selected.</p>
+<p>As you move your cursor across the map, you'll notice tooltips that provide summary information for each individual county (based on the living wage model selected). When looking at a single model, the tooltips include the name of the county, the annual living wage value for that county, and the percentage of the county's population whose household income is less than the living wage value shown. If you select two models to compare, the tooltips will expand to also include the difference between the two models, as well as the total living wage value for the second model selected.</p>
 
 <p>As a reference, here are a few terms and abbreviations that you might come across while using the Interactive Living Wage Calculator:</p>
 
