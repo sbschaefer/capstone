@@ -2,8 +2,6 @@ function UsMap(domRoot, onLoad) {
 
 	var svg = d3.select(domRoot).append('div').append("svg")
 
-	var defs = svg.append('defs')
-
 	var world = svg.append('g').attr('class', 'world');
 
 	var this_ = this;
@@ -72,29 +70,16 @@ function UsMap(domRoot, onLoad) {
 		var path = d3.geo.path()
 			.projection(projection);
 
-		
-
-		var highlightNode;
-
-		defs.selectAll("path")
-			.data(topojson.feature(map, map.objects.counties).features)
-		.enter().append("path")
-			.attr("id", function(d) {
-				var id = d.id;
-				return "path" + id;
-			})
-			.attr("d", path)
-
-
 		var counties = world.append("g")
 			.attr("class", "counties")
 
-		counties.selectAll("use")
+		var highlightNode;
+
+		counties.selectAll("path")
 			.data(topojson.feature(map, map.objects.counties).features)
-		.enter().append("use").attr('xlink:href', function(d) {
-			var id = d.id;
-			return "#path" + id;
-		}).on('mouseover', function(d) {
+		.enter().append("path")
+			.attr("d", path)
+			.on('mouseover', function(d) {
 				if (this_.tip) {
 					this_.tip.show(d);
 				}
@@ -194,7 +179,7 @@ function UsMap(domRoot, onLoad) {
 			d3.rgb(203, 0, 0)
 		);
 
-		d3.selectAll(".counties > use").attr('fill', function(d) {
+		d3.selectAll(".counties > path").attr('fill', function(d) {
 			var lw = countyDataMap.get(d.id);
 
 			if (lw) {
