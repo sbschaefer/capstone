@@ -182,22 +182,13 @@ function UsMap(domRoot, onLoad) {
 
 	this.recolor = function(countyDataMap) {
 
-		// Not sure correct terminology... basically buckets from 0..1
-		if (this.percentiles) {
-			var percentiles = this.percentiles;
-		} else {
-			var percentiles = d3.range(0, 1, .005)
-			percentiles.push(1)
-			this.percentiles = percentiles;
-		}
-
 		var totals = countyDataMap.values();
-		
-		var cdf = d3.scale.quantile()
-			.domain(totals)
-			.range(percentiles);
+
+		var minValue = d3.min(totals);
+		var maxValue = d3.max(totals);
 
 		var colorScale = this.buildDivergentScale(
+			[minValue, maxValue],
 			d3.rgb(0, 0, 227),
 			d3.rgb(255,255,191),
 			d3.rgb(203, 0, 0)
@@ -207,36 +198,18 @@ function UsMap(domRoot, onLoad) {
 			var lw = countyDataMap.get(d.id);
 
 			if (lw) {
-				return colorScale(cdf(lw));
+				return colorScale(lw);
 			}else{
 				//console.log("Unrecognized FIPS code: " + d.id);
 				return white;
 			}
 		});
 
-		var legendPoints = [.25, .5, .75];
-		var minLegend = cdf.invertExtent(0)[0]
-		var maxLegend = cdf.invertExtent(1)[1]
-
-		var legendDomain = [minLegend]
-		legendPoints.forEach(function(p) {
-			var val = cdf.invertExtent(p);
-			val = val[0] + (val[1] - val[0]) / 2;
-
-			legendDomain.push(val)
-		});
-		legendDomain.push(maxLegend);
-
-		var legendColorScale = d3.scale.ordinal();
-		legendColorScale.domain(legendDomain);
-		legendColorScale.range(legendDomain.map(function(d) {
-			return d3.rgb(colorScale(cdf(d)));
-		}));
-
 		var labelFormat = d3.format('$,.02f');
 
 		if (this.legend === undefined) {
 			this.legend = d3.legend.color();
+			this.legend.cells([5]);
 
 			svg.append('g')
 				.attr('class', 'colorLegend')
@@ -245,11 +218,8 @@ function UsMap(domRoot, onLoad) {
 		}
 		
 		this.legend
-			.scale(legendColorScale)
-			.labels(legendDomain.map(function(d) {
-				// d3.legend's labelFormat not working
-				return labelFormat(d);
-			}));
+			.scale(colorScale)
+			.labelFormat(labelFormat);
 
 		svg.select('.colorLegend').call(this.legend)
 	};
@@ -259,7 +229,7 @@ function UsMap(domRoot, onLoad) {
 		if (this.legend) {
 			var rect = svg.node().getBoundingClientRect();
 
-			var width = rect.width - 115;
+			var width = rect.width - 125;
 			var height = rect.height - 90;
 
 			svg.select('.colorLegend')
@@ -268,19 +238,33 @@ function UsMap(domRoot, onLoad) {
 	}
 
 		// Interpolate between 3 colors.
-	this.buildDivergentScale = function(lowerColor, midColor, upperColor) {
+	this.buildDivergentScale = function(domain, lowerColor, midColor, upperColor) {
+		var midpoint = domain[0] + (domain[1] - domain[0]) / 2.0;
+
 		var lowerColorScale = d3.scale.linear()
-			.domain([0, .5])
+			.domain([domain[0], midpoint])
 			.range([lowerColor, midColor])
 			.interpolate(d3.interpolateRgb)
 
 		var upperColorScale = d3.scale.linear()
-			.domain([.5, 1])
+			.domain([midpoint, domain[1]])
 			.range([midColor, upperColor])
 			.interpolate(d3.interpolateRgb)
 
-		return function(val) {
-			return (val <= .5) ? lowerColorScale(val) : upperColorScale(val);
+		var scale = function(val) {
+			return (val <= midpoint) ? lowerColorScale(val) : upperColorScale(val);
 		};
+
+		scale.domain = function() {
+			return domain;
+		}
+
+		var ls = d3.scale.linear().domain(domain);
+
+		scale.ticks = function(val) {
+			return ls.ticks(val)
+		}
+
+		return scale;
 	}
 }
