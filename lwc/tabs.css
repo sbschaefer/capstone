@@ -7,24 +7,25 @@ http://tympanus.net/Development/TabStylesInspiration/css/tabs.css
 	position: relative;
 	overflow: hidden;
 	margin: 0 auto;
-	width: 100%;
 }
 
 /* Nav */
-.tabs nav {
+.tabs > nav {
 	text-align: center;
 }
 
-.tabs nav ul {
+.tabs > nav > ul {
 	position: relative;
 	display: -ms-flexbox;
 	display: -webkit-flex;
 	display: -moz-flex;
 	display: -ms-flex;
 	display: flex;
-	margin: 0 auto;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-right: 15px;
 	padding: 0;
-	max-width: 1200px;
+	max-width: 325px;
 	list-style: none;
 	-ms-box-orient: horizontal;
 	-ms-box-pack: center;
@@ -40,40 +41,36 @@ http://tympanus.net/Development/TabStylesInspiration/css/tabs.css
 	justify-content: center;
 }
 
-.tabs nav ul li {
+.tabs > nav > ul > li {
 	position: relative;
-	z-index: 1;
 	display: block;
 	margin: 0;
 	text-align: center;
-	-webkit-flex: 1;
-	-moz-flex: 1;
-	-ms-flex: 1;
-	flex: 1;
+
 	font-weight: 300;
 	font-size: 1.25em;
 }
 
-.tabs nav a {
+.tabs > nav a {
 	position: relative;
 	display: block;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	line-height: 2.5;
+	line-height: 2.0;
 	text-decoration: none;
 }
 
-.tabs nav a span {
+.tabs > nav a span {
 	vertical-align: middle;
 	font-size: 0.75em;
 }
 
-.tabs nav li.active a {
+.tabs > nav li.active a {
 	color: #74777b;
 }
 
-.tabs nav a:focus {
+.tabs > nav a:focus {
 	outline: none;
 }
 
@@ -129,21 +126,19 @@ http://tympanus.net/Development/TabStylesInspiration/css/tabs.css
 }
 
 .tabs-style-linebox > nav > ul > li {
-	margin: 0 0.5em;
-	-webkit-flex: none;
-	flex: none;
+	margin: 0 0.25em;
 }
 
 .tabs-style-linebox > nav > ul > li:first-child {
-	margin: 0 0.5em 0 0;
+	margin: 0 0.25em 0 0;
 }
 
 .tabs-style-linebox > nav > ul > li:last-child {
-	margin: 0 0 0 0.5em;
+	margin: 0 0 0 0.25em;
 }
 
 .tabs-style-linebox > nav a {
-	padding: 0 1.5em;
+	padding: 0 1.25em;
 	color: #74777b;
 	font-weight: 700;
 	-webkit-transition: color 0.3s;
@@ -185,16 +180,4 @@ http://tympanus.net/Development/TabStylesInspiration/css/tabs.css
 .tabs-style-linebox nav a:focus::after,
 .tabs-style-linebox nav a.active::after {
 	background: #2CC185;
-}
-
-@media screen and (max-width: 58em) {
-	.tabs-style-linebox nav ul {
-		display: block;
-		box-shadow: none;
-	}
-	.tabs-style-linebox nav ul li {
-		display: block;
-		-webkit-flex: none;
-		flex: none;
-	}
 }

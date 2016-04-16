@@ -2,15 +2,17 @@
 // Adapted From: https://bl.ocks.org/mbostock/3885304
 function barchart(parentNode, userHeight) {
 
+	var parentNode = parentNode;
+
 	var margin = {top: 20, right: 20, bottom: 30, left: 50},
-			width = 300 - margin.left - margin.right,
-			height = ((userHeight !== undefined) ? userHeight : 500) - margin.top - margin.bottom;
+			width = 325 - margin.left - margin.right,
+			height = ((userHeight !== undefined) ? userHeight : 500);
 
 	var x = d3.scale.ordinal()
 			.rangeRoundBands([0, width], .1);
 
 	var y = d3.scale.linear()
-			.range([height, 0]);
+			.range([height - margin.top - margin.bottom, 0]);
 
 	var xAxisIcons = {
 		'food': '\uf101',
@@ -42,10 +44,11 @@ function barchart(parentNode, userHeight) {
 		.ticks(10)
 		.tickFormat(d3.format("$,.02"));
 
-	var svg = parentNode.append("svg")
+	var mainSvg = parentNode.append("svg")
 			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
-		.append("g")
+			.attr("height", height)
+
+	var svg = mainSvg.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	svg.append("g")
@@ -62,9 +65,20 @@ function barchart(parentNode, userHeight) {
 
 	var colors = d3.scale.category10();
 
+	var this_ = this;
+
+	this.setSize = function(newHeight) {
+
+		newHeight = (newHeight > 550) ? 550 : newHeight;
+
+		mainSvg.attr('height', newHeight);
+		y.range([newHeight - margin.top - margin.bottom, 0]);
+	}
+
 	this.update = function(model, dataRow, yDomain) {
 
 		var columns = ['housing', 'food', 'childcare', 'medical', 'transportation', 'other', 'benefits', 'taxes']
+		x.domain(columns);
 
 		var data = []
 
@@ -72,11 +86,9 @@ function barchart(parentNode, userHeight) {
 
 		if (dataRow) {
 			columns.map(function(c) {
-				//if (model.hasOwnProperty(c)) {
-					var val = +dataRow[model[c]];
-					data.push({id: c, value: val})
-					vals.push(val);
-				//}
+				var val = +dataRow[model[c]];
+				data.push({id: c, value: val})
+				vals.push(val);
 			});
 		} else {
 			columns.map(function(c) {
@@ -84,13 +96,38 @@ function barchart(parentNode, userHeight) {
 			});
 		}
 
+		if (yDomain) {
+			var dataMin = yDomain[0];
+			var dataMax = yDomain[1];
+		} else {
+			var dataMin = d3.min(vals);
+			var dataMax = d3.max(vals);
+		}
+
+		this.chartData = {
+			data : data,
+			yDomain : [dataMin, dataMax]
+		}
+
+		this.draw();
+	};
+
+	this.draw = function(isResize) {
+
 		var iconMap = this.xAxisIcons;
-		x.domain(columns);
-		
+
+		var cd = this.chartData;
+
+		if (cd === undefined) {
+			return;
+		}
+
+		var yheight = y.range()[0];
+				
 		if (this.xAxisRendered === undefined) {
 				svg.append("g")
 						.attr("class", "x axis")
-						.attr("transform", "translate(0," + height + ")")
+						.attr("transform", "translate(0," + yheight + ")")
 					.call(xAxis);
 
 			svg.selectAll('.x.axis > .tick > text')
@@ -102,27 +139,21 @@ function barchart(parentNode, userHeight) {
 					});
 			
 			this.xAxisRendered = true;
-		}
-
-		if (yDomain) {
-			var dataMin = yDomain[0];
-			var dataMax = yDomain[1];
-		} else {
-
-			var dataMin = d3.min(vals);
-			var dataMax = d3.max(vals);
-
+		}else{
+			svg.selectAll('.x.axis').attr("transform", "translate(0," + yheight + ")")
 		}
 
 		//Rescale y-axis
-		if (dataRow) {
-			y.domain([dataMin, dataMax]);
+		if (!cd.data.every(function(element) {return element === 0;})) {
+			y.domain(cd.yDomain);
+		}
 
-			svg.select('.y.axis')
+		svg.select('.y.axis')
 					.call(yAxis);
-		}		
+			
 
-		var bars = svg.selectAll(".bar").data(data);
+		var bars = svg.selectAll(".bar").data(cd.data);
+		var dataMin = cd.yDomain[0];
 
 		bars.enter().append("rect")
 			.attr("class", "bar")

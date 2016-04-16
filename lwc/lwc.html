@@ -3,7 +3,7 @@
 <head>
 	<title>Living Wage Calculator</title>
 
-	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<meta charset="utf8">
 	
 
@@ -57,7 +57,8 @@
 	<div id="calculator">
 		<div id="lwcContainer"></div>
 		<div id="dataContainer">
-			<div style="margin-bottom: 10px;">
+			
+			<div style="margin-bottom: 10px; margin-top: 15px;">
 	
 				<select id="modelSelect" disabled>
 					<option value="mit_lwc">MIT Living Wage</option>
@@ -75,12 +76,12 @@
 			<div>
 	
 				<select id="familySelect" disabled>
-					<option selected value="1Adult">1 Adult</option>
+					<option value="1Adult">1 Adult</option>
 					<option value="1Adult1Child">1 Adult + 1 Child</option>
 					<option value="1Adult2Child">1 Adult + 2 Children</option>
 					<option value="1Adult3Child">1 Adult + 3 Children</option>
 					<option value="2Adult">2 Adults</option>
-					<option value="2Adult1Child">2 Adults + 1 Child</option>
+					<option selected value="2Adult1Child">2 Adults + 1 Child</option>
 					<option value="2Adult2Child">2 Adults + 2 Children</option>
 					<option value="2Adult3Child">2 Adults + 3 Children</option>
 				</select>
@@ -92,18 +93,18 @@
 
 					<img class="fakeButton disabledButton" id="mainSwitch" src="minus.png"></img>
 				</div>
-				<div id="diffFamilySelectArea" style="margin-bottom: 20px;">
+				<div id="diffFamilySelectArea">
 
 				</div>
 			</div>
 
-			<div id="countyNameContainer">
+			<div id="countyNameContainer" class="hidden" style="margin-right: 15px;">
 				<div id="countyName">&nbsp;</div>
 				<div id="chartName"><span id="chartNameLW"></span></div>
 			</div>
 
-			<div id="mainDataArea">
-				<div class="initialholder">
+			<div id="mainDataArea" class="dataArea">
+				<div id="mainInitialHolder" class="initialholder">
 					<span>Click on a county to see a cost breakdown</span>
 				</div>
 
@@ -112,14 +113,14 @@
 				</div>
 			</div>
 
-			<div id="diffDataArea" class="hidden" style="margin-top: 20px;">
-				<div class="initialholder">
-					<span style="height: 400px">Click on a county to see a cost breakdown</span>
+			<div id="diffDataArea" class="dataArea hidden" style="margin-top: 20px;">
+				<div id="diffInitialHolder" class="initialholder">
+					<span>Click on a county to see a cost breakdown</span>
 				</div>
 
 				<div id="diffBarchartContainer" class="hidden">
 
-					<div class="tabs tabs-style-linebox">
+					<div id="diffTabs" class="tabs tabs-style-linebox">
 						<nav>
 							<ul>
 								<li><a href='#tab1Content'><span>Diff</span></a></li>
@@ -138,10 +139,34 @@
 
 				</div>
 			</div>
+
+			<div class="fakeMargin"></div>
 		</div>
+
 	</div>
 
 	<script>
+		// From; https://developer.mozilla.org/en-US/docs/Web/Events/resize
+		;(function() {
+		    var throttle = function(type, name, obj) {
+		        obj = obj || window;
+		        var running = false;
+		        var func = function() {
+		            if (running) { return; }
+		            running = true;
+		             requestAnimationFrame(function() {
+		                obj.dispatchEvent(new CustomEvent(name));
+		                running = false;
+		            });
+		        };
+		        obj.addEventListener(type, func);
+		    };
+
+		    /* init - you can init any event */
+		    throttle("resize", "optimizedResize");
+		})();
+
+
 		var diffModelSelect = $('#modelSelect').clone()
 		diffModelSelect.attr('id', 'diffModelSelect')
 
@@ -363,7 +388,23 @@
 
 		var lwFormat = d3.format("$,.02f");
 
+		var updateChartHeights = function() {
+			if (diffMode) {
+				var tabHeight = d3.select('#diffTabs > nav').node().getBoundingClientRect().height;
+				var offset = tabHeight + 15;
+
+				firstBarChart.setSize(document.getElementById('diffDataArea').getBoundingClientRect().height - offset)
+				secondBarChart.setSize(document.getElementById('diffDataArea').getBoundingClientRect().height - offset)
+				diffBarChart.setSize(document.getElementById('diffDataArea').getBoundingClientRect().height - offset)
+			}else{
+				mainBarChart.setSize(document.getElementById('mainDataArea').getBoundingClientRect().height - 15)
+			}
+		};
+
 		var updateBarcharts = function(fips) {
+
+			updateChartHeights();
+
 			var dataRow = selectedData.get(fips);
 			var lwValue = 0;
 
@@ -604,16 +645,19 @@
 			var fips = d.id;
 			currentFips = fips;
 			
-			updateBarcharts(fips);
-
 			if (!chartShown) {
 				chartShown = true;
 
 				d3.selectAll('.initialholder').remove();
-
+				document.getElementById('countyNameContainer').className = '';				
 				document.getElementById('barchartContainer').className = '';
 				document.getElementById('diffBarchartContainer').className = '';
+
+
+				
 			}
+
+			updateBarcharts(fips);
 		}
 
 		$('#familySelect').on('change', function(e) {
@@ -679,6 +723,18 @@
 		var diffBarChart = new barchart(d3.select('#tab1Content'), diffBarchartHeight);
 		var firstBarChart = new barchart(d3.select('#tab2Content'), diffBarchartHeight);
 		var secondBarChart = new barchart(d3.select('#tab3Content'), diffBarchartHeight);
+
+		window.addEventListener("optimizedResize", function() {
+			updateChartHeights();
+
+			if (diffMode) {
+				diffBarChart.draw();
+				firstBarChart.draw();
+				secondBarChart.draw();
+			}else{
+				mainBarChart.draw();
+			}
+		});				
 	</script>
 	<script src="tabs.js"></script>
 </body>
