@@ -35,6 +35,28 @@
 	<script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/d3-legend/1.9.0/d3-legend.min.js"></script>
 
+	<script>
+		// From; https://developer.mozilla.org/en-US/docs/Web/Events/resize
+		;(function() {
+		    var throttle = function(type, name, obj) {
+		        obj = obj || window;
+		        var running = false;
+		        var func = function() {
+		            if (running) { return; }
+		            running = true;
+		             requestAnimationFrame(function() {
+		                obj.dispatchEvent(new CustomEvent(name));
+		                running = false;
+		            });
+		        };
+		        obj.addEventListener(type, func);
+		    };
+
+		    /* init - you can init any event */
+		    throttle("resize", "optimizedResize");
+		})();
+	</script>
+
 	<script src="map.js"></script>
 	<script src="barchart.js"></script>
 
@@ -146,27 +168,6 @@
 	</div>
 
 	<script>
-		// From; https://developer.mozilla.org/en-US/docs/Web/Events/resize
-		;(function() {
-		    var throttle = function(type, name, obj) {
-		        obj = obj || window;
-		        var running = false;
-		        var func = function() {
-		            if (running) { return; }
-		            running = true;
-		             requestAnimationFrame(function() {
-		                obj.dispatchEvent(new CustomEvent(name));
-		                running = false;
-		            });
-		        };
-		        obj.addEventListener(type, func);
-		    };
-
-		    /* init - you can init any event */
-		    throttle("resize", "optimizedResize");
-		})();
-
-
 		var diffModelSelect = $('#modelSelect').clone()
 		diffModelSelect.attr('id', 'diffModelSelect')
 
