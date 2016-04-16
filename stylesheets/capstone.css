@@ -3,3 +3,7 @@
 	font-size: small;
 	display: inline-block;
 }
+
+td, th {
+	padding: 3px;
+}
