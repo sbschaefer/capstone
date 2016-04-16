@@ -217,7 +217,7 @@
 		}
 
 		under_lw_map = {
-			//"mit_lwc" : "",
+			"mit_lwc" : "MIT Below LWC",
 			"mids_lwc": "MIDS Below LWC",
 			"4xTC" : "4xTC Below LWC",
 			"medical": "Medical Below LWC",
@@ -572,9 +572,11 @@
 
 		var underlwFormat = d3.format("%");
 		getUnderLW = function(data, model_id) {
-			var underLWCColumn = under_lw_map[model_id];
-			if (underLWCColumn) {
-				return underlwFormat(data[underLWCColumn]);
+			if (data) {
+				var underLWCColumn = under_lw_map[model_id];
+				if (underLWCColumn) {
+					return underlwFormat(data[underLWCColumn]);
+				}
 			}
 
 			return undefined;
@@ -653,9 +655,6 @@
 				document.getElementById('countyNameContainer').className = '';				
 				document.getElementById('barchartContainer').className = '';
 				document.getElementById('diffBarchartContainer').className = '';
-
-
-				
 			}
 
 			updateBarcharts(fips);
