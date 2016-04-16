@@ -217,3 +217,11 @@ body {
 	margin-bottom: 8px;
 	display: inline-block;
 }
+
+.countiesblack > path {
+	stroke: black;
+}
+
+.statesblack {
+	stroke: black;
+}

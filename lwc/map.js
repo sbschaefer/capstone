@@ -113,10 +113,13 @@ function UsMap(domRoot, onLoad) {
 				this_.zoomCounter = 0;
 			});
 
-		world.append("path")
+		var states = world.append("path")
 			.datum(topojson.mesh(map, map.objects.states, function(a, b) { return a !== b; }))
 			.attr("class", "states")
 			.attr("d", path);
+
+		this_.states = states;
+		this_.counties = counties;
 
 		this_.worldRect = world.node().getBoundingClientRect();
 
@@ -172,6 +175,18 @@ function UsMap(domRoot, onLoad) {
 		var minValue = d3.min(totals);
 		var maxValue = d3.max(totals);
 
+		if (minValue == maxValue) {
+
+			this_.previousNoData = true;
+			this_.counties.attr('class', 'counties countiesblack');
+			this_.states.attr('class', 'states statesblack');
+
+		}else if (this_.previousNoData) {
+			this_.counties.attr('class', 'counties');
+			this_.states.attr('class', 'states');
+			this_.previousNoData = false;
+		}
+
 		var colorScale = this.buildDivergentScale(
 			[minValue, maxValue],
 			d3.rgb(0, 0, 227),
@@ -206,7 +221,11 @@ function UsMap(domRoot, onLoad) {
 			.scale(colorScale)
 			.labelFormat(labelFormat);
 
-		svg.select('.colorLegend').call(this.legend)
+		if (this.previousNoData) {
+			svg.select('.colorLegend').selectAll("*").remove();
+		} else {
+			svg.select('.colorLegend').call(this.legend)
+		}
 	};
 
 	this.positionLegend = function() {
