@@ -66,7 +66,7 @@ function UsMap(domRoot, onLoad) {
 		this.originalWidth = width;
 
 		var projection = d3.geo.albersUsa()
-			.scale(width * 1.22)
+			.scale(width * 1.15)
 			.translate([width / 2 + 30, height / 2]);
 
 		var path = d3.geo.path()
