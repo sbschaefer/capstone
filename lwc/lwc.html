@@ -62,20 +62,6 @@
 
 	<span style="font-family: Flaticon; position: absolute; top: -1000px; color: white;">&#xF100;</span>
 
-<!--
-	<span id ="chars" style="font-family: Flaticon; position: absolute;"></span>
-	<script>
-		var span = document.getElementById('chars');
-
-		var charsList = '';
-		
-		for (var i = 0; i <= 8; i++) {
-			charsList += '&#xF10' + i + " ";
-		}
-
-		span.innerHTML = charsList;
-	</script>
--->
 	<div id="calculator">
 		<div id="lwcContainer"></div>
 		<div id="dataContainer">
@@ -187,10 +173,6 @@
 		function normalize_fips(fips) {
 			if (fips[0] == '0') {
 				return fips.substr(1);
-			}
-
-			if (fips.endsWith('99999')) {
-				return fips.substring(0, fips.length - 5);
 			}
 
 			return fips;
